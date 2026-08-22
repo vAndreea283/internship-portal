@@ -15,6 +15,8 @@
                        class="nav-link px-2 ${activePage eq 'about' ? 'active' : 'link-dark'}">Despre</a></li>
                 <li><a href="${pageContext.request.contextPath}/Positions"
                        class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
+                <li><a href="${pageContext.request.contextPath}/Companies"
+                       class="nav-link px-2 ${activePage eq 'companies' ? 'active' : 'link-dark'}">Companii</a></li>
             </ul>
 
             <div class="text-end">

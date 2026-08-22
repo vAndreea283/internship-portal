@@ -8,13 +8,15 @@ public class CompanyDto {
     private String description;
     private CompanyStatus status;
     private String username;
+    private Long userId;
 
-    public CompanyDto(Long id, String name, String description, CompanyStatus status, String username) {
+    public CompanyDto(Long id, String name, String description, CompanyStatus status, String username, Long userId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.username = username;
+        this.userId = userId;
     }
 
     public Long getId() { return id; }
@@ -22,4 +24,5 @@ public class CompanyDto {
     public String getDescription() { return description; }
     public CompanyStatus getStatus() { return status; }
     public String getUsername() { return username; }
+    public Long getUserId() { return userId; }
 }
