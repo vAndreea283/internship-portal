@@ -37,7 +37,7 @@ public class TutoringPositionBean {
         for (TutoringPosition t : positions) {
             dtos.add(new TutoringPositionDto(
                     t.getId(), t.getTitle(), t.getDescription(),
-                    t.getStudent() != null ? t.getStudent().getFullName() : null));
+                    t.getStudent() != null ? t.getStudent().getFullName() : null)); // TutoringPosition este o pozitie de practica care poate exista inainte sa fie atribuita unui student
         }
         return dtos;
     }

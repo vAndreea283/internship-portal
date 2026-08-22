@@ -37,7 +37,7 @@ public class StudentBean {
         for (Student s : students) {
             dtos.add(new StudentDto(
                     s.getId(), s.getFullName(), s.getYearOfStudy(), s.getCvPath(), s.getImagePath(),
-                    s.getUser() != null ? s.getUser().getUsername() : null));
+                    s.getUser().getUsername())); // s.getUser() != null ? s.getUser().getUsername() : null));
         }
         return dtos;
     }

@@ -15,8 +15,10 @@ public class PositionDto {
     private PositionStatus status;
     private String companyName;
 
+    private Long companyId;
+
     public PositionDto(Long id, String title, String description, Integer numberOfSlots, Integer yearOfStudyTarget,
-                       LocalDate applicationDeadline, Integer durationWeeks, PositionStatus status, String companyName) {
+                       LocalDate applicationDeadline, Integer durationWeeks, PositionStatus status, String companyName, Long companyId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -26,6 +28,7 @@ public class PositionDto {
         this.durationWeeks = durationWeeks;
         this.status = status;
         this.companyName = companyName;
+        this.companyId = companyId;
     }
 
     public Long getId() { return id; }
@@ -37,4 +40,5 @@ public class PositionDto {
     public Integer getDurationWeeks() { return durationWeeks; }
     public PositionStatus getStatus() { return status; }
     public String getCompanyName() { return companyName; }
+    public Long getCompanyId() { return companyId; }
 }

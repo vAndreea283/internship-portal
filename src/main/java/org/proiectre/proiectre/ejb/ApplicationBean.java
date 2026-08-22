@@ -36,8 +36,8 @@ public class ApplicationBean {
         for (Application a : applications) {
             dtos.add(new ApplicationDto(
                     a.getId(), a.getStatus(),
-                    a.getStudent() != null ? a.getStudent().getFullName() : null,
-                    a.getPosition() != null ? a.getPosition().getTitle() : null));
+                    a.getStudent().getFullName(), // a.getStudent() != null ? a.getStudent().getFullName() : null,
+                    a.getPosition().getTitle())); // a.getPosition() != null ? a.getPosition().getTitle() : null));
         }
         return dtos;
     }

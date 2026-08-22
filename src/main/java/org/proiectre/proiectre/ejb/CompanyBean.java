@@ -36,7 +36,7 @@ public class CompanyBean {
         for (Company c : companies) {
             dtos.add(new CompanyDto(
                     c.getId(), c.getName(), c.getDescription(), c.getStatus(),
-                    c.getUser() != null ? c.getUser().getUsername() : null));
+                    c.getUser().getUsername())); // c.getUser() != null ? c.getUser().getUsername() : null));
         }
         return dtos;
     }

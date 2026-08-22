@@ -36,7 +36,7 @@ public class InterviewBean {
         for (Interview i : interviews) {
             dtos.add(new InterviewDto(
                     i.getId(), i.getSummary(), i.getResult(),
-                    i.getApplication() != null ? i.getApplication().getId() : null));
+                    i.getApplication().getId())); // i.getApplication() != null ? i.getApplication().getId() : null));
         }
         return dtos;
     }

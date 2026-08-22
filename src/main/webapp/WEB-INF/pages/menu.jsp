@@ -13,6 +13,8 @@
                        class="nav-link px-2 ${activePage eq 'home' ? 'active' : 'link-dark'}">Acasa</a></li>
                 <li><a href="${pageContext.request.contextPath}/about.jsp"
                        class="nav-link px-2 ${activePage eq 'about' ? 'active' : 'link-dark'}">Despre</a></li>
+                <li><a href="${pageContext.request.contextPath}/Positions"
+                       class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
             </ul>
 
             <div class="text-end">

@@ -30,7 +30,7 @@ public class Position {
     @Column(name = "duration_weeks", nullable = false)
     private Integer durationWeeks;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // fara el, JPA ar incerca sa salveze enum-ul ca numar (ordinal 0,1,2); fragil daca schimb ordinea constantelor
     @Column(name = "status", nullable = false)
     private PositionStatus status; // "PENDING", "APPROVED", "CLOSED"
 

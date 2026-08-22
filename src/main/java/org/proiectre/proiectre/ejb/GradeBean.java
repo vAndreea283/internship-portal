@@ -36,7 +36,7 @@ public class GradeBean {
         for (Grade g : grades) {
             dtos.add(new GradeDto(
                     g.getId(), g.getValue(),
-                    g.getApplication() != null ? g.getApplication().getId() : null));
+                    g.getApplication().getId())); // g.getApplication() != null ? g.getApplication().getId() : null
         }
         return dtos;
     }
