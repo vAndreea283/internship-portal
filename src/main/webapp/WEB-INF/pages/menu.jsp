@@ -17,6 +17,8 @@
                        class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
                 <li><a href="${pageContext.request.contextPath}/Companies"
                        class="nav-link px-2 ${activePage eq 'companies' ? 'active' : 'link-dark'}">Companii</a></li>
+                <li><a href="${pageContext.request.contextPath}/Students"
+                       class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>
             </ul>
 
             <div class="text-end">
