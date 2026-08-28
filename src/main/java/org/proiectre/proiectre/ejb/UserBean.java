@@ -5,13 +5,16 @@ package org.proiectre.proiectre.ejb;
 
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.proiectre.proiectre.common.UserDto;
 import org.proiectre.proiectre.entities.User;
+import org.proiectre.proiectre.entities.UserGroup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,6 +26,9 @@ public class UserBean {
     @PersistenceContext
     private EntityManager entityManager; // „intermediar” între Java si baza de date
 
+    @Inject
+    private PasswordBean passwordBean;
+
     /*DTO (Data Transfer Object) = obiect folosit pentru a transfera date intre diferite componente ale aplicatiei*/
     public List<UserDto> findAllUsers() {
         LOG.info("findAllUsers"); // scrie in log ca metoda findAllUsers() a fost apelata
@@ -32,6 +38,31 @@ public class UserBean {
             return copyUsersToDto(users);
         } catch (Exception ex) {
             throw new EJBException(ex);
+        }
+    }
+
+    public void createUser(String username, String email, String password, Collection<String> groups) {
+        LOG.info("createUser");
+        try {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setEmail(email);
+            newUser.setPassword(passwordBean.convertToSha256(password));
+            entityManager.persist(newUser); /* creeaza un rand in tabela users */
+
+            assignGroupsToUser(username, groups);
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    private void assignGroupsToUser(String username, Collection<String> groups) {
+        LOG.info("assignGroupsToUser");
+        for (String group : groups) {
+            UserGroup userGroup = new UserGroup();
+            userGroup.setUsername(username);
+            userGroup.setUserGroup(group);
+            entityManager.persist(userGroup);
         }
     }
 

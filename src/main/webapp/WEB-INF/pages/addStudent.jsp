@@ -42,6 +42,6 @@
             <div class="invalid-feedback">Trebuie sa alegi un cont!</div>
         </div>
 
-        <button class="w-100 btn btn-primary btn-lg" type="submit">Salvează</button>
+        <button class="w-100 btn btn-primary btn-lg" type="submit">Salveaza</button>
     </form>
 </t:pageTemplate>

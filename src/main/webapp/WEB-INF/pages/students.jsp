@@ -5,33 +5,40 @@
 <t:pageTemplate pageTitle="Studenti" activePage="students">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Studenti inregistrati</h1>
-        <a href="${pageContext.request.contextPath}/AddStudent" class="btn btn-primary btn-lg">Adauga student</a>
+        <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
+            <a href="${pageContext.request.contextPath}/AddStudent" class="btn btn-primary btn-lg">Adauga student</a>
+        </c:if>
     </div>
 
     <form method="POST" action="${pageContext.request.contextPath}/Students">
-        <button type="submit" class="btn btn-danger mt-3">Sterge selectate</button>
+        <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
+            <button type="submit" class="btn btn-danger mt-3">Sterge selectate</button>
+        </c:if>
         <table class="table table-striped mt-3">
             <thead>
             <tr>
-                <th></th>
+                <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}"><th></th></c:if>
                 <th>Nume</th>
                 <th>An de studiu</th>
                 <th>CV</th>
                 <th>Cont</th>
-                <th></th>
+                <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}"><th></th></c:if>
             </tr>
             </thead>
 
             <tbody>
             <c:forEach var="student" items="${students}">
                 <tr>
-                    <td><input type="checkbox" name="student_ids" value="${student.id}"></td>
+                    <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
+                        <td><input type="checkbox" name="student_ids" value="${student.id}"></td>
+                    </c:if>
                     <td>${student.fullName}</td>
                     <td>${student.yearOfStudy}</td>
                     <td>${student.cvPath}</td>
                     <td>${student.username}</td>
-                    <td><a class="btn btn-secondary btn-sm"
-                           href="${pageContext.request.contextPath}/EditStudent?id=${student.id}">Editeaza</a></td>
+                    <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
+                        <td><input type="checkbox" name="student_ids" value="${student.id}"></td>
+                    </c:if>
                 </tr>
             </c:forEach>
             </tbody>

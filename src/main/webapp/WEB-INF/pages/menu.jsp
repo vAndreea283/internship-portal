@@ -1,4 +1,5 @@
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <header class="p-3 mb-3 border-bottom">
     <div class="container-fluid">
@@ -13,16 +14,41 @@
                        class="nav-link px-2 ${activePage eq 'home' ? 'active' : 'link-dark'}">Acasa</a></li>
                 <li><a href="${pageContext.request.contextPath}/about.jsp"
                        class="nav-link px-2 ${activePage eq 'about' ? 'active' : 'link-dark'}">Despre</a></li>
-                <li><a href="${pageContext.request.contextPath}/Positions"
+
+                <%--<li><a href="${pageContext.request.contextPath}/Positions"
                        class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
                 <li><a href="${pageContext.request.contextPath}/Companies"
                        class="nav-link px-2 ${activePage eq 'companies' ? 'active' : 'link-dark'}">Companii</a></li>
                 <li><a href="${pageContext.request.contextPath}/Students"
-                       class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>
+                       class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>--%>
+
+                <c:if test="${pageContext.request.isUserInRole('READ_POSITIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/Positions"
+                           class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
+                </c:if>
+                <c:if test="${pageContext.request.isUserInRole('READ_COMPANIES')}">
+                    <li><a href="${pageContext.request.contextPath}/Companies"
+                           class="nav-link px-2 ${activePage eq 'companies' ? 'active' : 'link-dark'}">Companii</a></li>
+                </c:if>
+                <c:if test="${pageContext.request.isUserInRole('READ_STUDENTS')}">
+                    <li><a href="${pageContext.request.contextPath}/Students"
+                           class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>
+                </c:if>
+                <c:if test="${pageContext.request.isUserInRole('READ_USERS')}">
+                    <li><a href="${pageContext.request.contextPath}/Users"
+                           class="nav-link px-2 ${activePage eq 'users' ? 'active' : 'link-dark'}">Useri</a></li>
+                </c:if>
             </ul>
 
             <div class="text-end">
-                <a href="${pageContext.request.contextPath}/Login" class="btn btn-outline-primary">Login</a>
+                <c:choose>
+                    <c:when test="${pageContext.request.getRemoteUser() == null}">
+                        <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/Login">Login</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/Logout">Logout</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

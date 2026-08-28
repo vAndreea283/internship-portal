@@ -41,6 +41,6 @@
             </select>
         </div>
 
-        <button class="w-100 btn btn-primary btn-lg" type="submit">Salvează</button>
+        <button class="w-100 btn btn-primary btn-lg" type="submit">Salveaza</button>
     </form>
 </t:pageTemplate>
