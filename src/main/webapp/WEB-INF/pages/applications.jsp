@@ -6,7 +6,12 @@
     <h1>Aplicatii primite</h1>
     <table class="table table-striped mt-4">
         <thead>
-        <tr><th>Student</th><th>Pozitie</th><th>Status</th><c:if test="${pageContext.request.isUserInRole('WRITE_APPLICATIONS')}"><th></th></c:if></tr>
+        <tr>
+            <th>Student</th>
+            <th>Pozitie</th>
+            <th>Status</th>
+            <c:if test="${pageContext.request.isUserInRole('WRITE_APPLICATIONS')}"><th></th></c:if>
+        </tr>
         </thead>
 
         <tbody>
@@ -17,10 +22,13 @@
                 <td>${app.status}</td>
                 <c:if test="${pageContext.request.isUserInRole('WRITE_APPLICATIONS')}">
                     <td>
+                        <a class="btn btn-secondary btn-sm"
+                           href="${pageContext.request.contextPath}/ApplicationDetails?id=${app.id}">Detalii</a>
+
                         <form method="POST" action="${pageContext.request.contextPath}/Applications" class="d-inline">
                             <input type="hidden" name="id" value="${app.id}">
                             <input type="hidden" name="new_status" value="ACCEPTED">
-                            <button type="submit" class="btn btn-success btn-sm">Acceptă</button>
+                            <button type="submit" class="btn btn-success btn-sm">Accepta</button>
                         </form>
 
                         <form method="POST" action="${pageContext.request.contextPath}/Applications" class="d-inline">

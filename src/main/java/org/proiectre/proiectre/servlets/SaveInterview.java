@@ -1,0 +1,35 @@
+package org.proiectre.proiectre.servlets;
+
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.proiectre.proiectre.ejb.InterviewBean;
+import org.proiectre.proiectre.entities.InterviewResult;
+
+import java.io.IOException;
+
+@WebServlet(name = "SaveInterview", value = "/SaveInterview")
+@DeclareRoles({"WRITE_APPLICATIONS"})
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_APPLICATIONS"}))
+public class SaveInterview extends HttpServlet {
+    @Inject
+    private InterviewBean interviewBean;
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Long applicationId = Long.valueOf(request.getParameter("application_id"));
+        String summary = request.getParameter("summary");
+        InterviewResult result = InterviewResult.valueOf(request.getParameter("result"));
+
+        interviewBean.saveInterview(applicationId, summary, result);
+
+        response.sendRedirect(request.getContextPath() + "/ApplicationDetails?id=" + applicationId);
+    }
+}

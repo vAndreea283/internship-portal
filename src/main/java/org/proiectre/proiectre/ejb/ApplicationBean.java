@@ -140,6 +140,16 @@ public class ApplicationBean {
         return dtos;
     }
 
+    public ApplicationDto findById(Long id) {
+        LOG.info("findById " + id);
+        try {
+            Application application = entityManager.find(Application.class, id);
+            return application != null ? toDto(application) : null;
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     /*private List<ApplicationDto> copyApplicationsToDto(List<Application> applications) {
         List<ApplicationDto> dtos = new ArrayList<>();
         for (Application a : applications) {
