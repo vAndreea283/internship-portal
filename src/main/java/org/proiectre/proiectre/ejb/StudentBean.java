@@ -119,4 +119,17 @@ public class StudentBean {
         }
         return dtos;
     }
+
+    public StudentDto findByUsername(String username) {
+        LOG.info("findByUsername " + username);
+        try {
+            TypedQuery<Student> typedQuery = entityManager.createQuery(
+                    "SELECT s FROM Student s WHERE s.user.username = :username", Student.class);
+            typedQuery.setParameter("username", username);
+            List<Student> results = typedQuery.getResultList();
+            return results.isEmpty() ? null : toDto(results.get(0));
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
 }

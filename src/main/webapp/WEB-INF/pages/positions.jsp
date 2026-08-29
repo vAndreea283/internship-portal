@@ -10,6 +10,11 @@
     </c:if>
   </div>
 
+  <c:if test="${not empty sessionScope.applyError}">
+    <div class="alert alert-warning mt-3">${sessionScope.applyError}</div>
+    <c:remove var="applyError" scope="session"/>
+  </c:if>
+
   <form method="POST" action="${pageContext.request.contextPath}/Positions">
     <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}">
       <button type="submit" class="btn btn-danger mt-3">Sterge selectate</button>
@@ -25,6 +30,7 @@
         <th>Termen limita</th>
         <th>Status</th>
         <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}"><th></th></c:if>
+        <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}"><th></th></c:if>
       </tr>
       </thead>
 
@@ -43,6 +49,14 @@
           <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}">
             <td><a class="btn btn-secondary btn-sm"
                    href="${pageContext.request.contextPath}/EditPosition?id=${position.id}">Editeaza</a></td>
+          </c:if>
+          <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}">
+            <td>
+              <form method="POST" action="${pageContext.request.contextPath}/Apply" class="d-inline">
+                <input type="hidden" name="position_id" value="${position.id}">
+                <button type="submit" class="btn btn-success btn-sm">Aplica</button>
+              </form>
+            </td>
           </c:if>
         </tr>
       </c:forEach>

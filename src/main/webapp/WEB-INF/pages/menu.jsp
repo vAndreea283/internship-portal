@@ -38,6 +38,14 @@
                     <li><a href="${pageContext.request.contextPath}/Users"
                            class="nav-link px-2 ${activePage eq 'users' ? 'active' : 'link-dark'}">Useri</a></li>
                 </c:if>
+                <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/MyApplications"
+                           class="nav-link px-2 ${activePage eq 'myApplications' ? 'active' : 'link-dark'}">Aplicatiile mele</a></li>
+                </c:if>
+                <c:if test="${pageContext.request.isUserInRole('READ_APPLICATIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/Applications"
+                           class="nav-link px-2 ${activePage eq 'applications' ? 'active' : 'link-dark'}">Aplicatii</a></li>
+                </c:if>
             </ul>
 
             <div class="text-end">

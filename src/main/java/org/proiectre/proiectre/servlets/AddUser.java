@@ -18,7 +18,6 @@ import java.util.Arrays;
 @DeclareRoles({"READ_USERS", "WRITE_USERS"})
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_USERS"}))
 public class AddUser extends HttpServlet {
-
     @Inject
     private UserBean userBean;
 
@@ -29,7 +28,9 @@ public class AddUser extends HttpServlet {
                 "READ_POSITIONS", "WRITE_POSITIONS",
                 "READ_COMPANIES", "WRITE_COMPANIES",
                 "READ_STUDENTS", "WRITE_STUDENTS",
-                "READ_USERS", "WRITE_USERS"});
+                "READ_USERS", "WRITE_USERS",
+                "APPLY_POSITIONS",
+                "READ_APPLICATIONS", "WRITE_APPLICATIONS"});
         request.getRequestDispatcher("/WEB-INF/pages/addUser.jsp").forward(request, response);
     }
 
