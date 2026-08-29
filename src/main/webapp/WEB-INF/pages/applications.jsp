@@ -4,6 +4,11 @@
 
 <t:pageTemplate pageTitle="Aplicatii" activePage="applications">
     <h1>Aplicatii primite</h1>
+
+    <c:if test="${pageContext.request.isUserInRole('READ_APPLICATIONS')}">
+        <a href="${pageContext.request.contextPath}/ExportGrades" class="btn btn-outline-secondary">Exporta note (CSV)</a>
+    </c:if>
+
     <table class="table table-striped mt-4">
         <thead>
         <tr>

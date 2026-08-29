@@ -82,6 +82,24 @@ public class GradeBean {
         return dtos;
     }
 
+    public String exportGradesAsCsv() {
+        LOG.info("exportGradesAsCsv");
+        try {
+            TypedQuery<Grade> typedQuery = entityManager.createQuery(
+                    "SELECT g FROM Grade g", Grade.class);
+            StringBuilder csv = new StringBuilder("Student,Pozitie,Companie,Nota\n");
+            for (Grade g : typedQuery.getResultList()) {
+                csv.append(g.getApplication().getStudent().getFullName()).append(",")
+                        .append(g.getApplication().getPosition().getTitle()).append(",")
+                        .append(g.getApplication().getPosition().getCompany().getName()).append(",")
+                        .append(g.getValue()).append("\n");
+            }
+            return csv.toString();
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     /*private List<GradeDto> copyGradesToDto(List<Grade> grades) {
         List<GradeDto> dtos = new ArrayList<>();
         for (Grade g : grades) {

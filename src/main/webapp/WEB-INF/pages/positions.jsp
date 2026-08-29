@@ -8,6 +8,11 @@
     <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}">
       <a href="${pageContext.request.contextPath}/AddPosition" class="btn btn-primary btn-lg">Adauga pozitie</a>
     </c:if>
+
+    <form method="GET" action="${pageContext.request.contextPath}/Positions" class="d-flex mt-3 mb-2" style="max-width: 400px;">
+      <input type="text" name="q" class="form-control me-2" placeholder="Cauta dupa titlu sau companie..." value="${searchQuery}">
+      <button type="submit" class="btn btn-outline-primary">Cauta</button>
+    </form>
   </div>
 
   <c:if test="${not empty sessionScope.applyError}">
@@ -40,7 +45,7 @@
           <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}">
             <td><input type="checkbox" name="position_ids" value="${position.id}"></td>
           </c:if>
-          <td>${position.title}</td>
+          <td><a href="${pageContext.request.contextPath}/PositionDetails?id=${position.id}">${position.title}</a></td>
           <td>${position.companyName}</td>
           <td>${position.yearOfStudyTarget}</td>
           <td>${position.numberOfSlots}</td>

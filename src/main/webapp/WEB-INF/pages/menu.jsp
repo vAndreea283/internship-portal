@@ -12,6 +12,7 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center">
                 <li><a href="${pageContext.request.contextPath}"
                        class="nav-link px-2 ${activePage eq 'home' ? 'active' : 'link-dark'}">Acasa</a></li>
+
                 <li><a href="${pageContext.request.contextPath}/about.jsp"
                        class="nav-link px-2 ${activePage eq 'about' ? 'active' : 'link-dark'}">Despre</a></li>
 
@@ -26,6 +27,7 @@
                     <li><a href="${pageContext.request.contextPath}/Positions"
                            class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
                 </c:if>
+
                 <c:if test="${pageContext.request.isUserInRole('READ_COMPANIES')}">
                     <li><a href="${pageContext.request.contextPath}/Companies"
                            class="nav-link px-2 ${activePage eq 'companies' ? 'active' : 'link-dark'}">Companii</a></li>
@@ -34,14 +36,17 @@
                     <li><a href="${pageContext.request.contextPath}/Students"
                            class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>
                 </c:if>
+
                 <c:if test="${pageContext.request.isUserInRole('READ_USERS')}">
                     <li><a href="${pageContext.request.contextPath}/Users"
                            class="nav-link px-2 ${activePage eq 'users' ? 'active' : 'link-dark'}">Useri</a></li>
                 </c:if>
+
                 <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}">
                     <li><a href="${pageContext.request.contextPath}/MyApplications"
                            class="nav-link px-2 ${activePage eq 'myApplications' ? 'active' : 'link-dark'}">Aplicatiile mele</a></li>
                 </c:if>
+
                 <c:if test="${pageContext.request.isUserInRole('READ_APPLICATIONS')}">
                     <li><a href="${pageContext.request.contextPath}/Applications"
                            class="nav-link px-2 ${activePage eq 'applications' ? 'active' : 'link-dark'}">Aplicatii</a></li>
@@ -51,9 +56,15 @@
                     <li><a href="${pageContext.request.contextPath}/TutoringPositions"
                            class="nav-link px-2 ${activePage eq 'tutoring' ? 'active' : 'link-dark'}">Tutoriat</a></li>
                 </c:if>
+
                 <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}">
                     <li><a href="${pageContext.request.contextPath}/MyProfile"
                            class="nav-link px-2 ${activePage eq 'myProfile' ? 'active' : 'link-dark'}">Profilul meu</a></li>
+                </c:if>
+
+                <c:if test="${pageContext.request.isUserInRole('WRITE_POSITIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/Stats"
+                           class="nav-link px-2 ${activePage eq 'stats' ? 'active' : 'link-dark'}">Statistici</a></li>
                 </c:if>
             </ul>
 

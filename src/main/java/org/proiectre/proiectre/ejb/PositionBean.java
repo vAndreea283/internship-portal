@@ -12,7 +12,9 @@ import org.proiectre.proiectre.entities.PositionStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Stateless
@@ -143,5 +145,33 @@ public class PositionBean {
             dtos.add(toDto(p));
         }
         return dtos;
+    }
+
+    public List<PositionDto> searchPositions(String query) {
+        LOG.info("searchPositions " + query);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM Position p WHERE LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)",
+                    Position.class);
+            typedQuery.setParameter("q", "%" + query + "%");
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public Map<Integer, Long> countPositionsByYear() {
+        LOG.info("countPositionsByYear");
+        try {
+            TypedQuery<Object[]> typedQuery = entityManager.createQuery(
+                    "SELECT p.yearOfStudyTarget, COUNT(p) FROM Position p GROUP BY p.yearOfStudyTarget", Object[].class);
+            Map<Integer, Long> counts = new LinkedHashMap<>();
+            for (Object[] row : typedQuery.getResultList()) {
+                counts.put((Integer) row[0], (Long) row[1]);
+            }
+            return counts;
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
     }
 }
