@@ -41,7 +41,7 @@ public class AddStudent extends HttpServlet {
         String imagePath = request.getParameter("image_path");
         Long userId = Long.valueOf(request.getParameter("user_id"));
 
-        studentBean.createStudent(fullName, yearOfStudy, cvPath, imagePath, userId);
+        studentBean.createStudent(fullName, yearOfStudy, userId);
 
         response.sendRedirect(request.getContextPath() + "/Students");
     }

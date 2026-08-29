@@ -51,6 +51,10 @@
                     <li><a href="${pageContext.request.contextPath}/TutoringPositions"
                            class="nav-link px-2 ${activePage eq 'tutoring' ? 'active' : 'link-dark'}">Tutoriat</a></li>
                 </c:if>
+                <c:if test="${pageContext.request.isUserInRole('APPLY_POSITIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/MyProfile"
+                           class="nav-link px-2 ${activePage eq 'myProfile' ? 'active' : 'link-dark'}">Profilul meu</a></li>
+                </c:if>
             </ul>
 
             <div class="text-end">

@@ -44,7 +44,7 @@ public class TutoringPositionBean {
                     Student.class);
             List<StudentDto> dtos = new ArrayList<>();
             for (Student s : typedQuery.getResultList()) {
-                dtos.add(new StudentDto(s.getId(), s.getFullName(), s.getYearOfStudy(), s.getCvPath(), s.getImagePath(),
+                dtos.add(new StudentDto(s.getId(), s.getFullName(), s.getYearOfStudy(),
                         s.getUser() != null ? s.getUser().getUsername() : null,
                         s.getUser() != null ? s.getUser().getId() : null));
             }

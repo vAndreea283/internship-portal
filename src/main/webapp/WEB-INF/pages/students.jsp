@@ -20,6 +20,7 @@
                 <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}"><th></th></c:if>
                 <th>Nume</th>
                 <th>An de studiu</th>
+                <th>Poza</th>
                 <th>CV</th>
                 <th>Cont</th>
                 <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}"><th></th></c:if>
@@ -34,10 +35,13 @@
                     </c:if>
                     <td>${student.fullName}</td>
                     <td>${student.yearOfStudy}</td>
-                    <td>${student.cvPath}</td>
+                    <td><img src="${pageContext.request.contextPath}/StudentPhotos?id=${student.id}"
+                             style="width:40px;height:40px;object-fit:cover;" onerror="this.style.display='none'"></td>
+                    <td><a href="${pageContext.request.contextPath}/StudentCvs?id=${student.id}">Descarca</a></td>
                     <td>${student.username}</td>
                     <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
-                        <td><input type="checkbox" name="student_ids" value="${student.id}"></td>
+                        <td><a class="btn btn-secondary btn-sm"
+                               href="${pageContext.request.contextPath}/EditStudent?id=${student.id}">Editeaza</a></td>
                     </c:if>
                 </tr>
             </c:forEach>

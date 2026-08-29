@@ -5,8 +5,12 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.proiectre.proiectre.common.StudentCvDto;
 import org.proiectre.proiectre.common.StudentDto;
+import org.proiectre.proiectre.common.StudentPhotoDto;
 import org.proiectre.proiectre.entities.Student;
+import org.proiectre.proiectre.entities.StudentCv;
+import org.proiectre.proiectre.entities.StudentPhoto;
 import org.proiectre.proiectre.entities.User;
 
 import java.util.ArrayList;
@@ -57,7 +61,7 @@ public class StudentBean {
         }
     }
 
-    public void createStudent(String fullName, Integer yearOfStudy, String cvPath, String imagePath, Long userId) {
+    public void createStudent(String fullName, Integer yearOfStudy, Long userId) {
         LOG.info("createStudent");
         try {
             User user = entityManager.find(User.class, userId);
@@ -65,8 +69,6 @@ public class StudentBean {
             Student student = new Student();
             student.setFullName(fullName);
             student.setYearOfStudy(yearOfStudy);
-            student.setCvPath(cvPath);
-            student.setImagePath(imagePath);
             student.setUser(user);
 
             entityManager.persist(student);
@@ -75,7 +77,7 @@ public class StudentBean {
         }
     }
 
-    public void updateStudent(Long id, String fullName, Integer yearOfStudy, String cvPath, String imagePath, Long userId) {
+    public void updateStudent(Long id, String fullName, Integer yearOfStudy, Long userId) {
         LOG.info("updateStudent " + id);
         try {
             Student student = entityManager.find(Student.class, id);
@@ -83,8 +85,6 @@ public class StudentBean {
 
             student.setFullName(fullName);
             student.setYearOfStudy(yearOfStudy);
-            student.setCvPath(cvPath);
-            student.setImagePath(imagePath);
             student.setUser(user);
         } catch (Exception ex) {
             throw new EJBException(ex);
@@ -107,7 +107,7 @@ public class StudentBean {
 
     private StudentDto toDto(Student s) {
         return new StudentDto(
-                s.getId(), s.getFullName(), s.getYearOfStudy(), s.getCvPath(), s.getImagePath(),
+                s.getId(), s.getFullName(), s.getYearOfStudy(),
                 s.getUser() != null ? s.getUser().getUsername() : null,
                 s.getUser() != null ? s.getUser().getId() : null);
     }
@@ -128,6 +128,80 @@ public class StudentBean {
             typedQuery.setParameter("username", username);
             List<Student> results = typedQuery.getResultList();
             return results.isEmpty() ? null : toDto(results.get(0));
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public void addPhotoToStudent(Long studentId, String filename, String fileType, byte[] fileContent) {
+        LOG.info("addPhotoToStudent " + studentId);
+        try {
+            StudentPhoto photo = new StudentPhoto();
+            photo.setFilename(filename);
+            photo.setFileType(fileType);
+            photo.setFileContent(fileContent);
+
+            Student student = entityManager.find(Student.class, studentId);
+            if (student.getPhoto() != null) {
+                entityManager.remove(student.getPhoto());
+            }
+            student.setPhoto(photo);
+            photo.setStudent(student);
+            entityManager.persist(photo);
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public StudentPhotoDto findPhotoByStudentId(Long studentId) {
+        LOG.info("findPhotoByStudentId " + studentId);
+        try {
+            TypedQuery<StudentPhoto> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM StudentPhoto p WHERE p.student.id = :id", StudentPhoto.class);
+            typedQuery.setParameter("id", studentId);
+            List<StudentPhoto> photos = typedQuery.getResultList();
+            if (photos.isEmpty()) {
+                return null;
+            }
+            StudentPhoto photo = photos.get(0);
+            return new StudentPhotoDto(photo.getId(), photo.getFilename(), photo.getFileType(), photo.getFileContent());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public void addCvToStudent(Long studentId, String filename, String fileType, byte[] fileContent) {
+        LOG.info("addCvToStudent " + studentId);
+        try {
+            StudentCv cv = new StudentCv();
+            cv.setFilename(filename);
+            cv.setFileType(fileType);
+            cv.setFileContent(fileContent);
+
+            Student student = entityManager.find(Student.class, studentId);
+            if (student.getCv() != null) {
+                entityManager.remove(student.getCv());
+            }
+            student.setCv(cv);
+            cv.setStudent(student);
+            entityManager.persist(cv);
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public StudentCvDto findCvByStudentId(Long studentId) {
+        LOG.info("findCvByStudentId " + studentId);
+        try {
+            TypedQuery<StudentCv> typedQuery = entityManager.createQuery(
+                    "SELECT c FROM StudentCv c WHERE c.student.id = :id", StudentCv.class);
+            typedQuery.setParameter("id", studentId);
+            List<StudentCv> cvs = typedQuery.getResultList();
+            if (cvs.isEmpty()) {
+                return null;
+            }
+            StudentCv cv = cvs.get(0);
+            return new StudentCvDto(cv.getId(), cv.getFilename(), cv.getFileType(), cv.getFileContent());
         } catch (Exception ex) {
             throw new EJBException(ex);
         }

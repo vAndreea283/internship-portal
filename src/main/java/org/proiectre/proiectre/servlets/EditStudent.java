@@ -48,7 +48,7 @@ public class EditStudent extends HttpServlet {
         String imagePath = request.getParameter("image_path");
         Long userId = Long.valueOf(request.getParameter("user_id"));
 
-        studentBean.updateStudent(id, fullName, yearOfStudy, cvPath, imagePath, userId);
+        studentBean.updateStudent(id, fullName, yearOfStudy, userId);
 
         response.sendRedirect(request.getContextPath() + "/Students");
     }
