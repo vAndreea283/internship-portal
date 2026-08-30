@@ -174,4 +174,16 @@ public class PositionBean {
             throw new EJBException(ex);
         }
     }
+
+    public List<PositionDto> findByCompanyUsername(String username) {
+        LOG.info("findByCompanyUsername " + username);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM Position p WHERE p.company.user.username = :username", Position.class);
+            typedQuery.setParameter("username", username);
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
 }

@@ -22,4 +22,5 @@
 
     <button class="w-100 btn btn-primary btn-lg" type="submit">Login</button>
   </form>
+  <p class="mt-3"><a href="${pageContext.request.contextPath}/RegisterCompany">Esti o companie? Inregistreaza-te aici</a></p>
 </t:pageTemplate>

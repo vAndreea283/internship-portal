@@ -66,6 +66,16 @@
                     <li><a href="${pageContext.request.contextPath}/Stats"
                            class="nav-link px-2 ${activePage eq 'stats' ? 'active' : 'link-dark'}">Statistici</a></li>
                 </c:if>
+
+                <c:if test="${pageContext.request.isUserInRole('MANAGE_OWN_COMPANY')}">
+                    <li><a href="${pageContext.request.contextPath}/MyCompany"
+                           class="nav-link px-2 ${activePage eq 'myCompany' ? 'active' : 'link-dark'}">Compania mea</a></li>
+                </c:if>
+
+                <c:if test="${pageContext.request.isUserInRole('MANAGE_OWN_POSITIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/MyPositions"
+                           class="nav-link px-2 ${activePage eq 'myPositions' ? 'active' : 'link-dark'}">Pozitiile mele</a></li>
+                </c:if>
             </ul>
 
             <div class="text-end">

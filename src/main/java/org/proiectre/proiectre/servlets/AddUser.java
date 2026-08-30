@@ -30,7 +30,8 @@ public class AddUser extends HttpServlet {
                 "READ_STUDENTS", "WRITE_STUDENTS",
                 "READ_USERS", "WRITE_USERS",
                 "APPLY_POSITIONS",
-                "READ_APPLICATIONS", "WRITE_APPLICATIONS"});
+                "READ_APPLICATIONS", "WRITE_APPLICATIONS",
+                "MANAGE_OWN_COMPANY", "MANAGE_OWN_POSITIONS"});
         request.getRequestDispatcher("/WEB-INF/pages/addUser.jsp").forward(request, response);
     }
 
