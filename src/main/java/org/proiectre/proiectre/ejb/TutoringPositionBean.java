@@ -92,6 +92,20 @@ public class TutoringPositionBean {
         return dtos;
     }
 
+    public void deleteTutoringPositionsByIds(List<Long> ids) {
+        LOG.info("deleteTutoringPositionsByIds " + ids);
+        try {
+            for (Long id : ids) {
+                TutoringPosition tp = entityManager.find(TutoringPosition.class, id);
+                if (tp != null) {
+                    entityManager.remove(tp);
+                }
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     /*private List<TutoringPositionDto> copyToDto(List<TutoringPosition> positions) {
         List<TutoringPositionDto> dtos = new ArrayList<>();
         for (TutoringPosition t : positions) {

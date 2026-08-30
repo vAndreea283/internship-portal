@@ -129,7 +129,9 @@ public class ApplicationBean {
                 a.getStudent() != null ? a.getStudent().getFullName() : null,
                 a.getPosition() != null ? a.getPosition().getTitle() : null,
                 a.getStudent() != null ? a.getStudent().getId() : null,
-                a.getPosition() != null ? a.getPosition().getId() : null);
+                a.getPosition() != null ? a.getPosition().getId() : null,
+                a.getInterview() != null ? a.getInterview().getResult().name() : null,
+                a.getGrade() != null ? a.getGrade().getValue() : null);
     }
 
     private List<ApplicationDto> copyToDto(List<Application> applications) {

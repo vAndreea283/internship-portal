@@ -100,6 +100,20 @@ public class GradeBean {
         }
     }
 
+    public void deleteByApplicationId(Long applicationId) {
+        LOG.info("deleteByApplicationId " + applicationId);
+        try {
+            TypedQuery<Grade> typedQuery = entityManager.createQuery(
+                    "SELECT g FROM Grade g WHERE g.application.id = :appId", Grade.class);
+            typedQuery.setParameter("appId", applicationId);
+            for (Grade g : typedQuery.getResultList()) {
+                entityManager.remove(g);
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     /*private List<GradeDto> copyGradesToDto(List<Grade> grades) {
         List<GradeDto> dtos = new ArrayList<>();
         for (Grade g : grades) {

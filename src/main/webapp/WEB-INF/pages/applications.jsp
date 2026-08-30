@@ -41,6 +41,12 @@
                             <input type="hidden" name="new_status" value="REJECTED">
                             <button type="submit" class="btn btn-danger btn-sm">Respinge</button>
                         </form>
+
+                        <form method="POST" action="${pageContext.request.contextPath}/DeleteApplication" class="d-inline">
+                            <input type="hidden" name="id" value="${app.id}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Sigur stergi aceasta aplicatie?');">Sterge</button>
+                        </form>
                     </td>
                 </c:if>
             </tr>

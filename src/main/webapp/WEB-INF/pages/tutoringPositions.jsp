@@ -25,6 +25,12 @@
 
                 <button class="btn btn-primary" type="submit">Salveaza</button>
             </form>
+
+            <form method="POST" action="${pageContext.request.contextPath}/DeleteTutoringPosition" class="d-inline mt-1">
+                <input type="hidden" name="id" value="${tp.id}">
+                <button type="submit" class="btn btn-outline-danger btn-sm"
+                        onclick="return confirm('Sigur stergi aceasta pozitie de tutoriat?');">Sterge</button>
+            </form>
         </div>
     </c:if>
 

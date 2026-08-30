@@ -28,6 +28,14 @@
         <button class="btn btn-primary" type="submit">Salveaza interviu</button>
     </form>
 
+    <c:if test="${not empty interview}">
+        <form method="POST" action="${pageContext.request.contextPath}/DeleteInterview" class="d-inline mt-2">
+            <input type="hidden" name="application_id" value="${application.id}">
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Sigur stergi interviul?');">Sterge interviu</button>
+        </form>
+    </c:if>
+
     <c:if test="${application.status eq 'ACCEPTED'}">
         <hr>
         <h3>Nota finala</h3>
@@ -40,5 +48,13 @@
             </div>
             <button class="btn btn-primary" type="submit">Salveaza nota</button>
         </form>
+
+        <c:if test="${not empty grade}">
+            <form method="POST" action="${pageContext.request.contextPath}/DeleteGrade" class="d-inline mt-2">
+                <input type="hidden" name="application_id" value="${application.id}">
+                <button type="submit" class="btn btn-outline-danger btn-sm"
+                        onclick="return confirm('Sigur stergi nota?');">Sterge nota</button>
+            </form>
+        </c:if>
     </c:if>
 </t:pageTemplate>

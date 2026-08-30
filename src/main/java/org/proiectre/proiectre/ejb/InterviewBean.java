@@ -84,6 +84,20 @@ public class InterviewBean {
         return dtos;
     }
 
+    public void deleteByApplicationId(Long applicationId) {
+        LOG.info("deleteByApplicationId " + applicationId);
+        try {
+            TypedQuery<Interview> typedQuery = entityManager.createQuery(
+                    "SELECT i FROM Interview i WHERE i.application.id = :appId", Interview.class);
+            typedQuery.setParameter("appId", applicationId);
+            for (Interview i : typedQuery.getResultList()) {
+                entityManager.remove(i);
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     /*private List<InterviewDto> copyInterviewsToDto(List<Interview> interviews) {
         List<InterviewDto> dtos = new ArrayList<>();
         for (Interview i : interviews) {

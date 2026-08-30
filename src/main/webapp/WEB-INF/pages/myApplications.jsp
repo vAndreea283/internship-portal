@@ -6,12 +6,22 @@
     <h1>Aplicatiile mele</h1>
     <table class="table table-striped mt-4">
         <thead>
-        <tr><th>Pozitie</th><th>Status</th></tr>
+        <tr>
+            <th>Pozitie</th>
+            <th>Status</th>
+            <th>Rezultat interviu</th>
+            <th>Nota finala</th>
+        </tr>
         </thead>
 
         <tbody>
         <c:forEach var="app" items="${applications}">
-            <tr><td>${app.positionTitle}</td><td>${app.status}</td></tr>
+            <tr>
+                <td>${app.positionTitle}</td>
+                <td>${app.status}</td>
+                <td>${empty app.interviewResult ? '-' : app.interviewResult}</td>
+                <td>${empty app.gradeValue ? '-' : app.gradeValue}</td>
+            </tr>
         </c:forEach>
         </tbody>
     </table>
