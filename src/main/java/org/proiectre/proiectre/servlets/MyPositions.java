@@ -13,7 +13,7 @@ import org.proiectre.proiectre.ejb.PositionBean;
 
 import java.io.IOException;
 
-@WebServlet(name="MyPositons", value="/MyPositions")
+@WebServlet(name="MyPositions", value="/MyPositions")
 @DeclareRoles({"MANAGE_OWN_POSITIONS"})
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"MANAGE_OWN_POSITIONS"}))
 public class MyPositions extends HttpServlet {

@@ -44,8 +44,6 @@ public class EditStudent extends HttpServlet {
         Long id = Long.valueOf(request.getParameter("id"));
         String fullName = request.getParameter("full_name");
         Integer yearOfStudy = Integer.valueOf(request.getParameter("year_of_study"));
-        String cvPath = request.getParameter("cv_path");
-        String imagePath = request.getParameter("image_path");
         Long userId = Long.valueOf(request.getParameter("user_id"));
 
         studentBean.updateStudent(id, fullName, yearOfStudy, userId);

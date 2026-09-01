@@ -68,4 +68,16 @@
       </tbody>
     </table>
   </form>
+
+  <c:if test="${totalPages > 1}">
+    <nav class="mt-3">
+      <ul class="pagination">
+        <c:forEach begin="1" end="${totalPages}" var="p">
+          <li class="page-item ${p == currentPage ? 'active' : ''}">
+            <a class="page-link" href="${pageContext.request.contextPath}/Positions?page=${p}${not empty searchQuery ? '&q='.concat(searchQuery) : ''}">${p}</a>
+          </li>
+        </c:forEach>
+      </ul>
+    </nav>
+  </c:if>
 </t:pageTemplate>

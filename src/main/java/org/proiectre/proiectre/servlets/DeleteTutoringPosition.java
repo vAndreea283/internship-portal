@@ -1,7 +1,6 @@
 package org.proiectre.proiectre.servlets;
 
 import jakarta.annotation.security.DeclareRoles;
-import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;

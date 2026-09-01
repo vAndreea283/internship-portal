@@ -73,4 +73,26 @@ public class UserBean {
         }
         return dtos;
     }
+
+    public List<UserDto> findUsersWithoutCompany() {
+        LOG.info("findUsersWithoutCompany");
+        try {
+            TypedQuery<User> typedQuery = entityManager.createQuery(
+                    "SELECT u FROM User u WHERE u.id NOT IN (SELECT c.user.id FROM Company c)", User.class);
+            return copyUsersToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public List<UserDto> findUsersWithoutStudent() {
+        LOG.info("findUsersWithoutStudent");
+        try {
+            TypedQuery<User> typedQuery = entityManager.createQuery(
+                    "SELECT u FROM User u WHERE u.id NOT IN (SELECT s.user.id FROM Student s)", User.class);
+            return copyUsersToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
 }

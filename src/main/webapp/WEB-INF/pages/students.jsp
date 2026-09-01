@@ -10,6 +10,19 @@
         </c:if>
     </div>
 
+    <c:if test="${not empty sessionScope.importMessage}">
+        <div class="alert alert-info mt-3">${sessionScope.importMessage}</div>
+        <c:remove var="importMessage" scope="session"/>
+    </c:if>
+    <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
+        <form method="POST" action="${pageContext.request.contextPath}/ImportStudents"
+              enctype="multipart/form-data" class="d-flex align-items-center gap-2 mt-3">
+            <input type="file" name="file" accept=".csv" class="form-control" style="max-width:300px;" required>
+            <button type="submit" class="btn btn-outline-primary">Importa studenti (CSV)</button>
+            <span class="text-muted small">Format: username,email,password,fullName,yearOfStudy</span>
+        </form>
+    </c:if>
+
     <form method="POST" action="${pageContext.request.contextPath}/Students">
         <c:if test="${pageContext.request.isUserInRole('WRITE_STUDENTS')}">
             <button type="submit" class="btn btn-danger mt-3">Sterge selectate</button>

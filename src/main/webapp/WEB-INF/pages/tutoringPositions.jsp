@@ -25,12 +25,6 @@
 
                 <button class="btn btn-primary" type="submit">Salveaza</button>
             </form>
-
-            <form method="POST" action="${pageContext.request.contextPath}/DeleteTutoringPosition" class="d-inline mt-1">
-                <input type="hidden" name="id" value="${tp.id}">
-                <button type="submit" class="btn btn-outline-danger btn-sm"
-                        onclick="return confirm('Sigur stergi aceasta pozitie de tutoriat?');">Sterge</button>
-            </form>
         </div>
     </c:if>
 
@@ -49,11 +43,11 @@
             <tr>
                 <td>${tp.title}</td>
                 <td>${tp.description}</td>
-                <td>${empty tp.studentName ? '-' : tp.studentName}</td>
+                <td>${empty tp.studentNames ? '-' : tp.studentNames}</td>
                 <c:if test="${pageContext.request.isUserInRole('WRITE_TUTORING')}">
                     <td>
-                        <c:if test="${empty tp.studentName}">
-                            <form method="POST" action="${pageContext.request.contextPath}/AssignTutoring" class="d-flex gap-2">
+                        <c:if test="${empty tp.studentNames}">
+                            <form method="POST" action="${pageContext.request.contextPath}/AssignTutoring" class="d-flex gap-2 mb-1">
                                 <input type="hidden" name="tutoring_position_id" value="${tp.id}">
                                 <select class="form-select form-select-sm" name="student_id" required>
                                     <option value="">Alege student...</option>
@@ -64,6 +58,11 @@
                                 <button type="submit" class="btn btn-success btn-sm">Asigneaza</button>
                             </form>
                         </c:if>
+                        <form method="POST" action="${pageContext.request.contextPath}/DeleteTutoringPosition" class="d-inline">
+                            <input type="hidden" name="id" value="${tp.id}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Sigur stergi aceasta pozitie de tutoriat?');">Sterge</button>
+                        </form>
                     </td>
                 </c:if>
             </tr>

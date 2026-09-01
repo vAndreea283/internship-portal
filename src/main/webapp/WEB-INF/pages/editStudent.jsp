@@ -23,16 +23,6 @@
         </div>
 
         <div class="mb-3">
-            <label for="cv_path" class="form-label">CV (cale/link - temporar, pana la upload real)</label>
-            <input type="text" class="form-control" id="cv_path" name="cv_path" value="${student.cvPath}">
-        </div>
-
-        <div class="mb-3">
-            <label for="image_path" class="form-label">Poză (cale/link - temporar, pana la upload real)</label>
-            <input type="text" class="form-control" id="image_path" name="image_path" value="${student.imagePath}">
-        </div>
-
-        <div class="mb-3">
             <label for="user_id" class="form-label">Cont asociat</label>
             <select class="form-select" id="user_id" name="user_id" required>
                 <c:forEach var="user" items="${users}">

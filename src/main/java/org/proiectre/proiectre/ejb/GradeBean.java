@@ -7,8 +7,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.proiectre.proiectre.common.GradeDto;
 import org.proiectre.proiectre.entities.Application;
+import org.proiectre.proiectre.entities.ApplicationStatus;
 import org.proiectre.proiectre.entities.Grade;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -109,6 +111,45 @@ public class GradeBean {
             for (Grade g : typedQuery.getResultList()) {
                 entityManager.remove(g);
             }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    // format CSV asteptat (cu header pe prima linie): studentUsername,positionTitle,value
+    public String importGradesFromCsv(byte[] csvContent) {
+        LOG.info("importGradesFromCsv");
+        try {
+            String content = new String(csvContent, StandardCharsets.UTF_8);
+            String[] lines = content.split("\\r?\\n");
+            int imported = 0;
+            int skipped = 0;
+
+            for (int i = 1; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) continue;
+
+                String[] cols = line.split(",");
+                if (cols.length < 3) { skipped++; continue; }
+
+                String studentUsername = cols[0].trim();
+                String positionTitle = cols[1].trim();
+                Double value = Double.valueOf(cols[2].trim());
+
+                TypedQuery<Application> typedQuery = entityManager.createQuery(
+                        "SELECT a FROM Application a WHERE a.student.user.username = :username " +
+                                "AND a.position.title = :title AND a.status = :accepted", Application.class);
+                typedQuery.setParameter("username", studentUsername);
+                typedQuery.setParameter("title", positionTitle);
+                typedQuery.setParameter("accepted", ApplicationStatus.ACCEPTED);
+                List<Application> results = typedQuery.getResultList();
+
+                if (results.isEmpty()) { skipped++; continue; }
+
+                saveGrade(results.get(0).getId(), value);
+                imported++;
+            }
+            return imported + " note importate, " + skipped + " sarite (aplicatie ACCEPTED negasita).";
         } catch (Exception ex) {
             throw new EJBException(ex);
         }

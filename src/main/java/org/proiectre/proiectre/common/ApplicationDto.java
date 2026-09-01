@@ -1,6 +1,5 @@
 package org.proiectre.proiectre.common;
 
-import org.proiectre.proiectre.ejb.ApplicationBean;
 import org.proiectre.proiectre.entities.ApplicationStatus;
 
 public class ApplicationDto {

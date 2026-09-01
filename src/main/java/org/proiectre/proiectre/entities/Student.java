@@ -32,6 +32,10 @@ public class Student {
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCv cv;
 
+    @ManyToOne
+    @JoinColumn(name = "tutoring_position_id")
+    private TutoringPosition tutoringPosition;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getFullName() { return fullName; }
@@ -46,4 +50,6 @@ public class Student {
     public void setPhoto(StudentPhoto photo) { this.photo = photo; }
     public StudentCv getCv() { return cv; }
     public void setCv(StudentCv cv) { this.cv = cv; }
+    public TutoringPosition getTutoringPosition() { return tutoringPosition; }
+    public void setTutoringPosition(TutoringPosition tutoringPosition) { this.tutoringPosition = tutoringPosition; }
 }

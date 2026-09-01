@@ -2,6 +2,7 @@ package org.proiectre.proiectre.ejb;
 
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -12,7 +13,9 @@ import org.proiectre.proiectre.entities.Student;
 import org.proiectre.proiectre.entities.StudentCv;
 import org.proiectre.proiectre.entities.StudentPhoto;
 import org.proiectre.proiectre.entities.User;
+import org.proiectre.proiectre.entities.UserGroup;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,6 +27,9 @@ public class StudentBean {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject
+    private PasswordBean passwordBean;
 
     public List<StudentDto> findAllStudents() {
         LOG.info("findAllStudents");
@@ -202,6 +208,58 @@ public class StudentBean {
             }
             StudentCv cv = cvs.get(0);
             return new StudentCvDto(cv.getId(), cv.getFilename(), cv.getFileType(), cv.getFileContent());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    // format CSV asteptat (cu header pe prima linie): username,email,password,fullName,yearOfStudy
+    public String importStudentsFromCsv(byte[] csvContent) {
+        LOG.info("importStudentsFromCsv");
+        try {
+            String content = new String(csvContent, StandardCharsets.UTF_8);
+            String[] lines = content.split("\\r?\\n");
+            int imported = 0;
+            int skipped = 0;
+
+            for (int i = 1; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) continue;
+
+                String[] cols = line.split(",");
+                if (cols.length < 5) { skipped++; continue; }
+
+                String username = cols[0].trim();
+                String email = cols[1].trim();
+                String password = cols[2].trim();
+                String fullName = cols[3].trim();
+                Integer yearOfStudy = Integer.valueOf(cols[4].trim());
+
+                TypedQuery<Long> countQuery = entityManager.createQuery(
+                        "SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class);
+                countQuery.setParameter("username", username);
+                if (countQuery.getSingleResult() > 0) { skipped++; continue; }
+
+                User user = new User();
+                user.setUsername(username);
+                user.setEmail(email);
+                user.setPassword(passwordBean.convertToSha256(password));
+                entityManager.persist(user);
+
+                UserGroup group = new UserGroup();
+                group.setUsername(username);
+                group.setUserGroup("APPLY_POSITIONS");
+                entityManager.persist(group);
+
+                Student student = new Student();
+                student.setFullName(fullName);
+                student.setYearOfStudy(yearOfStudy);
+                student.setUser(user);
+                entityManager.persist(student);
+
+                imported++;
+            }
+            return imported + " studenti importati, " + skipped + " sariti (username existent sau linie invalida).";
         } catch (Exception ex) {
             throw new EJBException(ex);
         }

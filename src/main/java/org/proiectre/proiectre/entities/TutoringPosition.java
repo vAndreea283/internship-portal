@@ -1,10 +1,11 @@
 package org.proiectre.proiectre.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tutoring_positions")
-public class TutoringPosition { // poziție de practica in facultate, fallback pentru studentii ramasi fara loc
+public class TutoringPosition { // pozitie de practica in facultate, fallback pentru studentii ramasi fara loc
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
@@ -16,9 +17,8 @@ public class TutoringPosition { // poziție de practica in facultate, fallback p
     @Column(name = "description", length = 2000)
     private String description;
 
-    @OneToOne // un tutoring position poate fi ocupat de un singur student, iar un student poate ocupa un singur tutoring position
-    @JoinColumn(name = "student_id", unique = true)
-    private Student student; // null pana e asignat un student
+    @OneToMany(mappedBy = "tutoringPosition") // o pozitie de tutoriat poate avea mai multi studenti asignati
+    private List<Student> students;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -26,6 +26,6 @@ public class TutoringPosition { // poziție de practica in facultate, fallback p
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-    public Student getStudent() { return student; }
-    public void setStudent(Student student) { this.student = student; }
+    public List<Student> getStudents() { return students; }
+    public void setStudents(List<Student> students) { this.students = students; }
 }

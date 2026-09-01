@@ -27,7 +27,7 @@ public class AddStudent extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<UserDto> users = userBean.findAllUsers();
+        List<UserDto> users = userBean.findUsersWithoutStudent();
         request.setAttribute("users", users);
         request.getRequestDispatcher("/WEB-INF/pages/addStudent.jsp").forward(request, response);
     }
@@ -37,8 +37,6 @@ public class AddStudent extends HttpServlet {
             throws ServletException, IOException {
         String fullName = request.getParameter("full_name");
         Integer yearOfStudy = Integer.valueOf(request.getParameter("year_of_study"));
-        String cvPath = request.getParameter("cv_path");
-        String imagePath = request.getParameter("image_path");
         Long userId = Long.valueOf(request.getParameter("user_id"));
 
         studentBean.createStudent(fullName, yearOfStudy, userId);

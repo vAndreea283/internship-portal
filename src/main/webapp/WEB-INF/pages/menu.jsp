@@ -23,7 +23,7 @@
                 <li><a href="${pageContext.request.contextPath}/Students"
                        class="nav-link px-2 ${activePage eq 'students' ? 'active' : 'link-dark'}">Studenti</a></li>--%>
 
-                <c:if test="${pageContext.request.isUserInRole('READ_POSITIONS')}">
+                <c:if test="${pageContext.request.isUserInRole('READ_POSITIONS') or pageContext.request.isUserInRole('APPLY_POSITIONS')}">
                     <li><a href="${pageContext.request.contextPath}/Positions"
                            class="nav-link px-2 ${activePage eq 'positions' ? 'active' : 'link-dark'}">Pozitii</a></li>
                 </c:if>

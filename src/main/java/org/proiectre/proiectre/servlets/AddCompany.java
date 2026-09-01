@@ -8,8 +8,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.proiectre.proiectre.common.CompanyDto;
-import org.proiectre.proiectre.common.PositionDto;
 import org.proiectre.proiectre.common.UserDto;
 import org.proiectre.proiectre.ejb.CompanyBean;
 import org.proiectre.proiectre.ejb.UserBean;
@@ -30,7 +28,7 @@ public class AddCompany extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<UserDto> users = userBean.findAllUsers();
+        List<UserDto> users = userBean.findUsersWithoutCompany();
         request.setAttribute("users", users);
         request.getRequestDispatcher("/WEB-INF/pages/addCompany.jsp").forward(request, response);
     }

@@ -22,16 +22,6 @@
         </div>
 
         <div class="mb-3">
-            <label for="cv_path" class="form-label">CV (cale/link - temporar, pana la upload real)</label>
-            <input type="text" class="form-control" id="cv_path" name="cv_path">
-        </div>
-
-        <div class="mb-3">
-            <label for="image_path" class="form-label">Poza (cale/link - temporar, pana la upload real)</label>
-            <input type="text" class="form-control" id="image_path" name="image_path">
-        </div>
-
-        <div class="mb-3">
             <label for="user_id" class="form-label">Cont asociat</label>
             <select class="form-select" id="user_id" name="user_id" required>
                 <option value="">Alege...</option>

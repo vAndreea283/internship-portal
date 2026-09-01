@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public class PositionBean {
 
     private static final Logger LOG = Logger.getLogger(PositionBean.class.getName());
+    private static final int PAGE_SIZE = 3;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -36,23 +37,22 @@ public class PositionBean {
         }
     }
 
-    /* 1. parcurge lista de Position; 2. transforma fiecare Position in PositionDto */
-    /*private List<PositionDto> copyPositionsToDto(List<Position> positions) {
-        List<PositionDto> dtos = new ArrayList<>();
-        for (Position p : positions) {
-            dtos.add(new PositionDto(
-                    p.getId(),
-                    p.getTitle(),
-                    p.getDescription(),
-                    p.getNumberOfSlots(),
-                    p.getYearOfStudyTarget(),
-                    p.getApplicationDeadline(),
-                    p.getDurationWeeks(),
-                    p.getStatus(),
-                    p.getCompany().getName())); // p.getCompany() != null ? p.getCompany().getName() : null));
+    public List<PositionDto> findAllPositionsPaged(int page) {
+        LOG.info("findAllPositionsPaged " + page);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery("SELECT p FROM Position p", Position.class);
+            typedQuery.setFirstResult((page - 1) * PAGE_SIZE);
+            typedQuery.setMaxResults(PAGE_SIZE);
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
         }
-        return dtos;
-    }*/
+    }
+
+    public int countAllPositions() {
+        TypedQuery<Long> countQuery = entityManager.createQuery("SELECT COUNT(p) FROM Position p", Long.class);
+        return (int) Math.ceil(countQuery.getSingleResult() / (double) PAGE_SIZE);
+    }
 
     public PositionDto findById(Long id) {
         LOG.info("findById " + id);
@@ -160,6 +160,29 @@ public class PositionBean {
         }
     }
 
+    public List<PositionDto> searchPositionsPaged(String query, int page) {
+        LOG.info("searchPositionsPaged " + query + " page " + page);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM Position p WHERE LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)",
+                    Position.class);
+            typedQuery.setParameter("q", "%" + query + "%");
+            typedQuery.setFirstResult((page - 1) * PAGE_SIZE);
+            typedQuery.setMaxResults(PAGE_SIZE);
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public int countSearchResults(String query) {
+        TypedQuery<Long> countQuery = entityManager.createQuery(
+                "SELECT COUNT(p) FROM Position p WHERE LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)",
+                Long.class);
+        countQuery.setParameter("q", "%" + query + "%");
+        return (int) Math.ceil(countQuery.getSingleResult() / (double) PAGE_SIZE);
+    }
+
     public Map<Integer, Long> countPositionsByYear() {
         LOG.info("countPositionsByYear");
         try {
@@ -186,4 +209,22 @@ public class PositionBean {
             throw new EJBException(ex);
         }
     }
+
+    /* 1. parcurge lista de Position; 2. transforma fiecare Position in PositionDto */
+    /*private List<PositionDto> copyPositionsToDto(List<Position> positions) {
+        List<PositionDto> dtos = new ArrayList<>();
+        for (Position p : positions) {
+            dtos.add(new PositionDto(
+                    p.getId(),
+                    p.getTitle(),
+                    p.getDescription(),
+                    p.getNumberOfSlots(),
+                    p.getYearOfStudyTarget(),
+                    p.getApplicationDeadline(),
+                    p.getDurationWeeks(),
+                    p.getStatus(),
+                    p.getCompany().getName())); // p.getCompany() != null ? p.getCompany().getName() : null));
+        }
+        return dtos;
+    }*/
 }

@@ -169,6 +169,11 @@ public class CompanyBean {
             group2.setUserGroup("MANAGE_OWN_POSITIONS");
             entityManager.persist(group2);
 
+            UserGroup group3 = new UserGroup();
+            group3.setUsername(username);
+            group3.setUserGroup("MANAGE_OWN_APPLICATIONS");
+            entityManager.persist(group3);
+
             Company company = new Company();
             company.setName(companyName);
             company.setDescription(description);

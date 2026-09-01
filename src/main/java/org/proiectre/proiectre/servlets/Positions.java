@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@DeclareRoles({"READ_POSITIONS", "WRITE_POSITIONS"})
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"READ_POSITIONS"}),
+@DeclareRoles({"READ_POSITIONS", "WRITE_POSITIONS", "APPLY_POSITIONS"})
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"READ_POSITIONS", "APPLY_POSITIONS"}),
         httpMethodConstraints = {@HttpMethodConstraint(value = "POST", rolesAllowed = {"WRITE_POSITIONS"})})
 
 @WebServlet(name = "Positions", value = "/Positions")
@@ -25,24 +25,21 @@ public class Positions extends HttpServlet {
     @Inject
     private PositionBean positionBean;
 
-   /*@Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<PositionDto> positions = positionBean.findAllPositions();
-        request.setAttribute("positions", positions);
-        request.getRequestDispatcher("/WEB-INF/pages/positions.jsp").forward(request, response);
-    }*/
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         String q = request.getParameter("q");
+
         if (q != null && !q.isBlank()) {
-            request.setAttribute("positions", positionBean.searchPositions(q));
+            request.setAttribute("positions", positionBean.searchPositionsPaged(q, page));
+            request.setAttribute("totalPages", positionBean.countSearchResults(q));
             request.setAttribute("searchQuery", q);
         } else {
-            request.setAttribute("positions", positionBean.findAllPositions());
+            request.setAttribute("positions", positionBean.findAllPositionsPaged(page));
+            request.setAttribute("totalPages", positionBean.countAllPositions());
         }
+        request.setAttribute("currentPage", page);
         request.getRequestDispatcher("/WEB-INF/pages/positions.jsp").forward(request, response);
     }
 

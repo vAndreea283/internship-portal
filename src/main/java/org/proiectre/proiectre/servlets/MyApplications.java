@@ -1,7 +1,6 @@
 package org.proiectre.proiectre.servlets;
 
 import jakarta.annotation.security.DeclareRoles;
-import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
@@ -18,7 +17,6 @@ import java.io.IOException;
 @DeclareRoles({"APPLY_POSITIONS"})
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"APPLY_POSITIONS"}))
 public class MyApplications extends HttpServlet {
-
     @Inject
     private ApplicationBean applicationBean;
 

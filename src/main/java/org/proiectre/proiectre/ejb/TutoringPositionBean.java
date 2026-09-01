@@ -14,6 +14,7 @@ import org.proiectre.proiectre.entities.TutoringPosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Stateless
 public class TutoringPositionBean {
@@ -41,7 +42,7 @@ public class TutoringPositionBean {
             TypedQuery<Student> typedQuery = entityManager.createQuery(
                     "SELECT s FROM Student s WHERE s.id NOT IN " +
                             "(SELECT a.student.id FROM Application a WHERE a.status = :accepted) " +
-                            "AND s.id NOT IN (SELECT t.student.id FROM TutoringPosition t WHERE t.student IS NOT NULL)",
+                            "AND s.tutoringPosition IS NULL",
                     Student.class);
             typedQuery.setParameter("accepted", ApplicationStatus.ACCEPTED);
             List<StudentDto> dtos = new ArrayList<>();
@@ -73,7 +74,7 @@ public class TutoringPositionBean {
         try {
             TutoringPosition tutoringPosition = entityManager.find(TutoringPosition.class, tutoringPositionId);
             Student student = entityManager.find(Student.class, studentId);
-            tutoringPosition.setStudent(student);
+            student.setTutoringPosition(tutoringPosition);
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
@@ -92,11 +93,12 @@ public class TutoringPositionBean {
             throw new EJBException(ex);
         }
     }
+
     private TutoringPositionDto toDto(TutoringPosition t) {
-        return new TutoringPositionDto(
-                t.getId(), t.getTitle(), t.getDescription(),
-                t.getStudent() != null ? t.getStudent().getFullName() : null,
-                t.getStudent() != null ? t.getStudent().getId() : null);
+        String names = (t.getStudents() == null || t.getStudents().isEmpty())
+                ? null
+                : t.getStudents().stream().map(Student::getFullName).collect(Collectors.joining(", "));
+        return new TutoringPositionDto(t.getId(), t.getTitle(), t.getDescription(), names);
     }
 
     private List<TutoringPositionDto> copyToDto(List<TutoringPosition> positions) {
