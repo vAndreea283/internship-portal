@@ -9,22 +9,31 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.proiectre.proiectre.ejb.ApplicationBean;
 import org.proiectre.proiectre.ejb.InterviewBean;
 import org.proiectre.proiectre.entities.InterviewResult;
 
 import java.io.IOException;
 
 @WebServlet(name = "SaveInterview", value = "/SaveInterview")
-@DeclareRoles({"WRITE_APPLICATIONS"})
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_APPLICATIONS"}))
+@DeclareRoles({"MANAGE_OWN_APPLICATIONS"})
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"MANAGE_OWN_APPLICATIONS"}))
 public class SaveInterview extends HttpServlet {
     @Inject
     private InterviewBean interviewBean;
+    @Inject
+    private ApplicationBean applicationBean;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Long applicationId = Long.valueOf(request.getParameter("application_id"));
+
+        if (!applicationBean.isOwnedByCompany(applicationId, request.getRemoteUser())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         String summary = request.getParameter("summary");
         InterviewResult result = InterviewResult.valueOf(request.getParameter("result"));
 

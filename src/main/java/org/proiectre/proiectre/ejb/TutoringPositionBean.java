@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.proiectre.proiectre.common.StudentDto;
 import org.proiectre.proiectre.common.TutoringPositionDto;
+import org.proiectre.proiectre.entities.ApplicationStatus;
 import org.proiectre.proiectre.entities.Student;
 import org.proiectre.proiectre.entities.TutoringPosition;
 
@@ -39,9 +40,10 @@ public class TutoringPositionBean {
         try {
             TypedQuery<Student> typedQuery = entityManager.createQuery(
                     "SELECT s FROM Student s WHERE s.id NOT IN " +
-                            "(SELECT a.student.id FROM Application a WHERE a.status = 'ACCEPTED') " +
+                            "(SELECT a.student.id FROM Application a WHERE a.status = :accepted) " +
                             "AND s.id NOT IN (SELECT t.student.id FROM TutoringPosition t WHERE t.student IS NOT NULL)",
                     Student.class);
+            typedQuery.setParameter("accepted", ApplicationStatus.ACCEPTED);
             List<StudentDto> dtos = new ArrayList<>();
             for (Student s : typedQuery.getResultList()) {
                 dtos.add(new StudentDto(s.getId(), s.getFullName(), s.getYearOfStudy(),
@@ -77,6 +79,19 @@ public class TutoringPositionBean {
         }
     }
 
+    public void deleteTutoringPositionsByIds(List<Long> ids) {
+        LOG.info("deleteTutoringPositionsByIds " + ids);
+        try {
+            for (Long id : ids) {
+                TutoringPosition tp = entityManager.find(TutoringPosition.class, id);
+                if (tp != null) {
+                    entityManager.remove(tp);
+                }
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
     private TutoringPositionDto toDto(TutoringPosition t) {
         return new TutoringPositionDto(
                 t.getId(), t.getTitle(), t.getDescription(),
@@ -90,20 +105,6 @@ public class TutoringPositionBean {
             dtos.add(toDto(t));
         }
         return dtos;
-    }
-
-    public void deleteTutoringPositionsByIds(List<Long> ids) {
-        LOG.info("deleteTutoringPositionsByIds " + ids);
-        try {
-            for (Long id : ids) {
-                TutoringPosition tp = entityManager.find(TutoringPosition.class, id);
-                if (tp != null) {
-                    entityManager.remove(tp);
-                }
-            }
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
     }
 
     /*private List<TutoringPositionDto> copyToDto(List<TutoringPosition> positions) {

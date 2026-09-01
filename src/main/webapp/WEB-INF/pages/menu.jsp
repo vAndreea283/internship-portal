@@ -76,6 +76,11 @@
                     <li><a href="${pageContext.request.contextPath}/MyPositions"
                            class="nav-link px-2 ${activePage eq 'myPositions' ? 'active' : 'link-dark'}">Pozitiile mele</a></li>
                 </c:if>
+
+                <c:if test="${pageContext.request.isUserInRole('MANAGE_OWN_APPLICATIONS')}">
+                    <li><a href="${pageContext.request.contextPath}/MyApplicationsReceived"
+                           class="nav-link px-2 ${activePage eq 'myApplicationsReceived' ? 'active' : 'link-dark'}">Aplicatii primite</a></li>
+                </c:if>
             </ul>
 
             <div class="text-end">

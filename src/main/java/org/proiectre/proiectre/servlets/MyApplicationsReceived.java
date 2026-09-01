@@ -10,32 +10,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.proiectre.proiectre.ejb.ApplicationBean;
-import org.proiectre.proiectre.ejb.GradeBean;
 
 import java.io.IOException;
 
-@WebServlet(name = "SaveGrade", value = "/SaveGrade")
+@WebServlet(name = "MyApplicationsReceived", value = "/MyApplicationsReceived")
 @DeclareRoles({"MANAGE_OWN_APPLICATIONS"})
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"MANAGE_OWN_APPLICATIONS"}))
-public class SaveGrade extends HttpServlet {
-    @Inject
-    private GradeBean gradeBean;
+public class MyApplicationsReceived extends HttpServlet {
     @Inject
     private ApplicationBean applicationBean;
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Long applicationId = Long.valueOf(request.getParameter("application_id"));
-        Double value = Double.valueOf(request.getParameter("value"));
-
-        if (!applicationBean.isOwnedByCompany(applicationId, request.getRemoteUser())) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-
-        gradeBean.saveGrade(applicationId, value);
-
-        response.sendRedirect(request.getContextPath() + "/ApplicationDetails?id=" + applicationId);
+        request.setAttribute("applications", applicationBean.findByCompanyUsername(request.getRemoteUser()));
+        request.getRequestDispatcher("/WEB-INF/pages/myApplicationsReceived.jsp").forward(request, response);
     }
 }

@@ -1,0 +1,44 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<t:pageTemplate pageTitle="Aplicatii primite" activePage="myApplicationsReceived">
+  <h1>Aplicatii primite la pozitiile mele</h1>
+  <table class="table table-striped mt-4">
+    <thead>
+    <tr><th>Student</th><th>Pozitie</th><th>Status</th><th></th></tr>
+    </thead>
+
+    <tbody>
+    <c:forEach var="app" items="${applications}">
+      <tr>
+        <td>${app.studentName}</td>
+        <td>${app.positionTitle}</td>
+        <td>${app.status}</td>
+        <td>
+          <a class="btn btn-secondary btn-sm"
+             href="${pageContext.request.contextPath}/ApplicationDetails?id=${app.id}">Detalii</a>
+
+          <form method="POST" action="${pageContext.request.contextPath}/UpdateApplicationStatus" class="d-inline">
+            <input type="hidden" name="id" value="${app.id}">
+            <input type="hidden" name="new_status" value="ACCEPTED">
+            <button type="submit" class="btn btn-success btn-sm">Accepta</button>
+          </form>
+
+          <form method="POST" action="${pageContext.request.contextPath}/UpdateApplicationStatus" class="d-inline">
+            <input type="hidden" name="id" value="${app.id}">
+            <input type="hidden" name="new_status" value="REJECTED">
+            <button type="submit" class="btn btn-danger btn-sm">Respinge</button>
+          </form>
+
+          <form method="POST" action="${pageContext.request.contextPath}/DeleteApplication" class="d-inline">
+            <input type="hidden" name="id" value="${app.id}">
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Sigur stergi aceasta aplicatie?');">Sterge</button>
+          </form>
+        </td>
+      </tr>
+    </c:forEach>
+    </tbody>
+  </table>
+</t:pageTemplate>

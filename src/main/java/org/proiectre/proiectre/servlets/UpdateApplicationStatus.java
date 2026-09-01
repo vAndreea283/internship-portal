@@ -10,14 +10,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.proiectre.proiectre.ejb.ApplicationBean;
+import org.proiectre.proiectre.entities.ApplicationStatus;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "DeleteApplication", value = "/DeleteApplication")
-@DeclareRoles({"WRITE_APPLICATIONS", "MANAGE_OWN_APPLICATIONS"})
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_APPLICATIONS", "MANAGE_OWN_APPLICATIONS"}))
-public class DeleteApplication extends HttpServlet {
+@WebServlet(name = "UpdateApplicationStatus", value = "/UpdateApplicationStatus")
+@DeclareRoles({"MANAGE_OWN_APPLICATIONS"})
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"MANAGE_OWN_APPLICATIONS"}))
+public class UpdateApplicationStatus extends HttpServlet {
     @Inject
     private ApplicationBean applicationBean;
 
@@ -26,14 +26,14 @@ public class DeleteApplication extends HttpServlet {
             throws ServletException, IOException {
         Long id = Long.valueOf(request.getParameter("id"));
 
-        // departamentul (WRITE_APPLICATIONS) poate sterge orice; compania doar ce-i apartine
-        if (!request.isUserInRole("WRITE_APPLICATIONS")
-                && !applicationBean.isOwnedByCompany(id, request.getRemoteUser())) {
+        if (!applicationBean.isOwnedByCompany(id, request.getRemoteUser())) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-        applicationBean.deleteApplicationsByIds(List.of(id));
-        String redirectTo = request.isUserInRole("WRITE_APPLICATIONS") ? "/Applications" : "/MyApplicationsReceived";
-        response.sendRedirect(request.getContextPath() + redirectTo);
+
+        ApplicationStatus newStatus = ApplicationStatus.valueOf(request.getParameter("new_status"));
+        applicationBean.updateStatus(id, newStatus);
+
+        response.sendRedirect(request.getContextPath() + "/MyApplicationsReceived");
     }
 }

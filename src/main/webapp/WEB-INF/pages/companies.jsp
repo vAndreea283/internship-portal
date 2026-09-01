@@ -37,7 +37,7 @@
                     <td>${company.status}</td>
                     <td>${company.username}</td>
                     <c:if test="${pageContext.request.isUserInRole('WRITE_COMPANIES')}">
-                        <td><input type="checkbox" name="company_ids" value="${company.id}"></td>
+                        <td><a class="btn btn-secondary btn-sm" href="${pageContext.request.contextPath}/EditCompany?id=${company.id}">Editeaza</a></td>
                     </c:if>
                 </tr>
             </c:forEach>

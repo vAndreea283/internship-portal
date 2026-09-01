@@ -47,6 +47,32 @@ public class ApplicationBean {
         }
     }
 
+    // compania vede doar aplicatiile primite la propriile pozitii
+    public List<ApplicationDto> findByCompanyUsername(String username) {
+        LOG.info("findByCompanyUsername " + username);
+        try {
+            TypedQuery<Application> typedQuery = entityManager.createQuery(
+                    "SELECT a FROM Application a WHERE a.position.company.user.username = :username", Application.class);
+            typedQuery.setParameter("username", username);
+            return copyToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+    // verificare de proprietate: apartine aceasta aplicatie companiei userului dat?
+    public boolean isOwnedByCompany(Long applicationId, String companyUsername) {
+        try {
+            TypedQuery<Long> countQuery = entityManager.createQuery(
+                    "SELECT COUNT(a) FROM Application a WHERE a.id = :appId AND a.position.company.user.username = :username",
+                    Long.class);
+            countQuery.setParameter("appId", applicationId);
+            countQuery.setParameter("username", companyUsername);
+            return countQuery.getSingleResult() > 0;
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
     // nu se mai poate aplica dupa deadline, evita aplicarea de doua ori la aceeasi pozitie
     public String createApplication(Long studentId, Long positionId) {
         LOG.info("createApplication student=" + studentId + " position=" + positionId);
@@ -123,6 +149,15 @@ public class ApplicationBean {
         }
     }
 
+    public ApplicationDto findById(Long id) {
+        LOG.info("findById " + id);
+        try {
+            Application application = entityManager.find(Application.class, id);
+            return application != null ? toDto(application) : null;
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
     private ApplicationDto toDto(Application a) {
         return new ApplicationDto(
                 a.getId(), a.getStatus(),
@@ -140,16 +175,6 @@ public class ApplicationBean {
             dtos.add(toDto(a));
         }
         return dtos;
-    }
-
-    public ApplicationDto findById(Long id) {
-        LOG.info("findById " + id);
-        try {
-            Application application = entityManager.find(Application.class, id);
-            return application != null ? toDto(application) : null;
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
     }
 
     /*private List<ApplicationDto> copyApplicationsToDto(List<Application> applications) {

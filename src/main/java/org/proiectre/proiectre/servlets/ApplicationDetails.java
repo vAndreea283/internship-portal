@@ -16,8 +16,8 @@ import org.proiectre.proiectre.ejb.InterviewBean;
 import java.io.IOException;
 
 @WebServlet(name = "ApplicationDetails", value = "/ApplicationDetails")
-@DeclareRoles({"WRITE_APPLICATIONS"})
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_APPLICATIONS"}))
+@DeclareRoles({"READ_APPLICATIONS", "MANAGE_OWN_APPLICATIONS"})
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"READ_APPLICATIONS", "MANAGE_OWN_APPLICATIONS"}))
 public class ApplicationDetails extends HttpServlet {
     @Inject
     private ApplicationBean applicationBean;
@@ -30,6 +30,12 @@ public class ApplicationDetails extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Long id = Long.valueOf(request.getParameter("id"));
+        // departamentul (READ_APPLICATIONS) vede orice; compania doar ce-i apartine
+        if (!request.isUserInRole("READ_APPLICATIONS")
+                && !applicationBean.isOwnedByCompany(id, request.getRemoteUser())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         request.setAttribute("application", applicationBean.findById(id));
         request.setAttribute("interview", interviewBean.findByApplicationId(id));
         request.setAttribute("grade", gradeBean.findByApplicationId(id));
