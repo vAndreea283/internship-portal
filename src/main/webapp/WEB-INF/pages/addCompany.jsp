@@ -4,15 +4,28 @@
 
 <t:pageTemplate pageTitle="Adauga companie" activePage="companies">
   <h1>Adauga companie</h1>
-  <form class="needs-validation mt-4"
-        novalidate
-        method="POST"
-        action="${pageContext.request.contextPath}/AddCompany">
+  <c:if test="${not empty error}">
+    <div class="alert alert-danger mt-3">${error}</div>
+  </c:if>
+  <form class="mt-4" method="POST" action="${pageContext.request.contextPath}/AddCompany">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username cont</label>
+      <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Parola</label>
+      <input type="password" class="form-control" id="password" name="password" required>
+    </div>
 
     <div class="mb-3">
       <label for="name" class="form-label">Nume companie</label>
       <input type="text" class="form-control" id="name" name="name" required>
-      <div class="invalid-feedback">Numele este obligatoriu!</div>
     </div>
 
     <div class="mb-3">
@@ -28,18 +41,6 @@
         <option value="REJECTED">REJECTED</option>
       </select>
     </div>
-
-    <div class="mb-3">
-      <label for="user_id" class="form-label">Cont asociat</label>
-      <select class="form-select" id="user_id" name="user_id" required>
-        <option value="">Alege...</option>
-        <c:forEach var="user" items="${users}">
-          <option value="${user.id}">${user.username}</option>
-        </c:forEach>
-      </select>
-      <div class="invalid-feedback">Trebuie sa alegi un cont!</div>
-    </div>
-
-    <button class="w-100 btn btn-primary btn-lg" type="submit">Salvează</button>
+    <button class="w-100 btn btn-primary btn-lg" type="submit">Salveaza</button>
   </form>
 </t:pageTemplate>

@@ -9,12 +9,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.proiectre.proiectre.common.StudentDto;
-import org.proiectre.proiectre.common.UserDto;
 import org.proiectre.proiectre.ejb.StudentBean;
-import org.proiectre.proiectre.ejb.UserBean;
 
 import java.io.IOException;
-import java.util.List;
 
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_STUDENTS"}))
 
@@ -22,19 +19,13 @@ import java.util.List;
 public class EditStudent extends HttpServlet {
     @Inject
     private StudentBean studentBean;
-    @Inject
-    private UserBean userBean;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<UserDto> users = userBean.findAllUsers();
-        request.setAttribute("users", users);
-
         Long id = Long.valueOf(request.getParameter("id"));
         StudentDto student = studentBean.findById(id);
         request.setAttribute("student", student);
-
         request.getRequestDispatcher("/WEB-INF/pages/editStudent.jsp").forward(request, response);
     }
 
@@ -44,9 +35,8 @@ public class EditStudent extends HttpServlet {
         Long id = Long.valueOf(request.getParameter("id"));
         String fullName = request.getParameter("full_name");
         Integer yearOfStudy = Integer.valueOf(request.getParameter("year_of_study"));
-        Long userId = Long.valueOf(request.getParameter("user_id"));
 
-        studentBean.updateStudent(id, fullName, yearOfStudy, userId);
+        studentBean.updateStudent(id, fullName, yearOfStudy);
 
         response.sendRedirect(request.getContextPath() + "/Students");
     }

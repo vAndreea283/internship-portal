@@ -8,13 +8,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.proiectre.proiectre.common.UserDto;
 import org.proiectre.proiectre.ejb.CompanyBean;
-import org.proiectre.proiectre.ejb.UserBean;
 import org.proiectre.proiectre.entities.CompanyStatus;
 
 import java.io.IOException;
-import java.util.List;
 
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_COMPANIES"}))
 
@@ -22,26 +19,29 @@ import java.util.List;
 public class AddCompany extends HttpServlet {
     @Inject
     private CompanyBean companyBean;
-    @Inject
-    private UserBean userBean;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<UserDto> users = userBean.findUsersWithoutCompany();
-        request.setAttribute("users", users);
         request.getRequestDispatcher("/WEB-INF/pages/addCompany.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         CompanyStatus status = CompanyStatus.valueOf(request.getParameter("status"));
-        Long userId = Long.valueOf(request.getParameter("user_id"));
 
-        companyBean.createCompany(name, description, status, userId);
+        String error = companyBean.createCompany(username, email, password, name, description, status);
+        if (error != null) {
+            request.setAttribute("error", error);
+            request.getRequestDispatcher("/WEB-INF/pages/addCompany.jsp").forward(request, response);
+            return;
+        }
 
         response.sendRedirect(request.getContextPath() + "/Companies");
     }

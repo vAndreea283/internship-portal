@@ -65,70 +65,6 @@ public class CompanyBean {
         }
     }
 
-    public void createCompany(String name, String description, CompanyStatus status, Long userId) {
-        LOG.info("createCompany");
-        try {
-            User user = entityManager.find(User.class, userId);
-
-            Company company = new Company();
-            company.setName(name);
-            company.setDescription(description);
-            company.setStatus(status);
-            company.setUser(user);
-
-            entityManager.persist(company);
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
-    }
-
-    public void updateCompany(Long id, String name, String description, CompanyStatus status, Long userId) {
-        LOG.info("updateCompany " + id);
-        try {
-            Company company = entityManager.find(Company.class, id);
-            User user = entityManager.find(User.class, userId);
-
-            company.setName(name);
-            company.setDescription(description);
-            company.setStatus(status);
-            company.setUser(user);
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
-    }
-
-    public void deleteCompaniesByIds(List<Long> ids) {
-        LOG.info("deleteCompaniesByIds " + ids);
-        try {
-            for (Long id : ids) {
-                Company company = entityManager.find(Company.class, id);
-                if (company != null) {
-                    entityManager.remove(company);
-                }
-            }
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
-    }
-
-    private CompanyDto toDto(Company c) {
-        return new CompanyDto(
-                c.getId(),
-                c.getName(),
-                c.getDescription(),
-                c.getStatus(),
-                c.getUser().getUsername(),
-                c.getUser().getId());
-    }
-
-    private List<CompanyDto> copyCompaniesToDto(List<Company> companies) {
-        List<CompanyDto> dtos = new ArrayList<>();
-        for (Company c : companies) {
-            dtos.add(toDto(c));
-        }
-        return dtos;
-    }
-
     public CompanyDto findByUsername(String username) {
         LOG.info("findByUsername " + username);
         try {
@@ -142,9 +78,11 @@ public class CompanyBean {
         }
     }
 
-    // inregistrare self-service: creeaza User + UserGroup + Company (status PENDING), toate intr-o singura tranzactie EJB
-    public String registerCompany(String username, String email, String password, String companyName, String description) {
-        LOG.info("registerCompany " + username);
+    // creeaza User + UserGroup-uri + Company intr-o singura tranzactie
+    // status configurabil: departamentul poate crea o companie deja APPROVED, sau lasata PENDING
+    public String createCompany(String username, String email, String password,
+                                String name, String description, CompanyStatus status) {
+        LOG.info("createCompany " + username);
         try {
             TypedQuery<Long> countQuery = entityManager.createQuery(
                     "SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class);
@@ -175,9 +113,9 @@ public class CompanyBean {
             entityManager.persist(group3);
 
             Company company = new Company();
-            company.setName(companyName);
+            company.setName(name);
             company.setDescription(description);
-            company.setStatus(CompanyStatus.PENDING);
+            company.setStatus(status);
             company.setUser(user);
             entityManager.persist(company);
 
@@ -185,5 +123,52 @@ public class CompanyBean {
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
+    }
+
+    // inregistrare self-service (fara autentificare): mereu porneste PENDING
+    public String registerCompany(String username, String email, String password, String companyName, String description) {
+        LOG.info("registerCompany " + username);
+        return createCompany(username, email, password, companyName, description, CompanyStatus.PENDING);
+    }
+
+    // editarea nu mai atinge contul - doar datele companiei
+    public void updateCompany(Long id, String name, String description, CompanyStatus status) {
+        LOG.info("updateCompany " + id);
+        try {
+            Company company = entityManager.find(Company.class, id);
+            company.setName(name);
+            company.setDescription(description);
+            company.setStatus(status);
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public void deleteCompaniesByIds(List<Long> ids) {
+        LOG.info("deleteCompaniesByIds " + ids);
+        try {
+            for (Long id : ids) {
+                Company company = entityManager.find(Company.class, id);
+                if (company != null) {
+                    entityManager.remove(company);
+                }
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    private CompanyDto toDto(Company c) {
+        return new CompanyDto(
+                c.getId(), c.getName(), c.getDescription(), c.getStatus(),
+                c.getUser().getUsername(), c.getUser().getId());
+    }
+
+    private List<CompanyDto> copyCompaniesToDto(List<Company> companies) {
+        List<CompanyDto> dtos = new ArrayList<>();
+        for (Company c : companies) {
+            dtos.add(toDto(c));
+        }
+        return dtos;
     }
 }

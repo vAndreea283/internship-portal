@@ -67,31 +67,47 @@ public class StudentBean {
         }
     }
 
-    public void createStudent(String fullName, Integer yearOfStudy, Long userId) {
-        LOG.info("createStudent");
+    // creeaza User + UserGroup(APPLY_POSITIONS) + Student intr-o singura tranzactie
+    public String createStudent(String username, String email, String password, String fullName, Integer yearOfStudy) {
+        LOG.info("createStudent " + username);
         try {
-            User user = entityManager.find(User.class, userId);
+            TypedQuery<Long> countQuery = entityManager.createQuery(
+                    "SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class);
+            countQuery.setParameter("username", username);
+            if (countQuery.getSingleResult() > 0) {
+                return "Acest username este deja folosit.";
+            }
+
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(passwordBean.convertToSha256(password));
+            entityManager.persist(user);
+
+            UserGroup group = new UserGroup();
+            group.setUsername(username);
+            group.setUserGroup("APPLY_POSITIONS");
+            entityManager.persist(group);
 
             Student student = new Student();
             student.setFullName(fullName);
             student.setYearOfStudy(yearOfStudy);
             student.setUser(user);
-
             entityManager.persist(student);
+
+            return null;
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
     }
 
-    public void updateStudent(Long id, String fullName, Integer yearOfStudy, Long userId) {
+    // editarea nu mai atinge contul - doar datele studentului
+    public void updateStudent(Long id, String fullName, Integer yearOfStudy) {
         LOG.info("updateStudent " + id);
         try {
             Student student = entityManager.find(Student.class, id);
-            User user = entityManager.find(User.class, userId);
-
             student.setFullName(fullName);
             student.setYearOfStudy(yearOfStudy);
-            student.setUser(user);
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
@@ -229,35 +245,10 @@ public class StudentBean {
                 String[] cols = line.split(",");
                 if (cols.length < 5) { skipped++; continue; }
 
-                String username = cols[0].trim();
-                String email = cols[1].trim();
-                String password = cols[2].trim();
-                String fullName = cols[3].trim();
-                Integer yearOfStudy = Integer.valueOf(cols[4].trim());
+                String error = createStudent(cols[0].trim(), cols[1].trim(), cols[2].trim(),
+                        cols[3].trim(), Integer.valueOf(cols[4].trim()));
 
-                TypedQuery<Long> countQuery = entityManager.createQuery(
-                        "SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class);
-                countQuery.setParameter("username", username);
-                if (countQuery.getSingleResult() > 0) { skipped++; continue; }
-
-                User user = new User();
-                user.setUsername(username);
-                user.setEmail(email);
-                user.setPassword(passwordBean.convertToSha256(password));
-                entityManager.persist(user);
-
-                UserGroup group = new UserGroup();
-                group.setUsername(username);
-                group.setUserGroup("APPLY_POSITIONS");
-                entityManager.persist(group);
-
-                Student student = new Student();
-                student.setFullName(fullName);
-                student.setYearOfStudy(yearOfStudy);
-                student.setUser(user);
-                entityManager.persist(student);
-
-                imported++;
+                if (error != null) { skipped++; } else { imported++; }
             }
             return imported + " studenti importati, " + skipped + " sariti (username existent sau linie invalida).";
         } catch (Exception ex) {
