@@ -155,21 +155,22 @@ public class StudentBean {
         }
     }
 
+    // upsert: daca studentul are deja poza, o actualizeaza in loc; altfel creeaza una noua
+    // (evita sterge+adauga, care ar viola constrangerea unique pe student_id daca INSERT-ul ajunge inaintea DELETE-ului)
     public void addPhotoToStudent(Long studentId, String filename, String fileType, byte[] fileContent) {
         LOG.info("addPhotoToStudent " + studentId);
         try {
-            StudentPhoto photo = new StudentPhoto();
+            Student student = entityManager.find(Student.class, studentId);
+            StudentPhoto photo = student.getPhoto();
+            if (photo == null) {
+                photo = new StudentPhoto();
+                photo.setStudent(student);
+                student.setPhoto(photo);
+                entityManager.persist(photo);
+            }
             photo.setFilename(filename);
             photo.setFileType(fileType);
             photo.setFileContent(fileContent);
-
-            Student student = entityManager.find(Student.class, studentId);
-            if (student.getPhoto() != null) {
-                entityManager.remove(student.getPhoto());
-            }
-            student.setPhoto(photo);
-            photo.setStudent(student);
-            entityManager.persist(photo);
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
@@ -192,21 +193,21 @@ public class StudentBean {
         }
     }
 
+    // upsert, acelasi motiv ca la poza
     public void addCvToStudent(Long studentId, String filename, String fileType, byte[] fileContent) {
         LOG.info("addCvToStudent " + studentId);
         try {
-            StudentCv cv = new StudentCv();
+            Student student = entityManager.find(Student.class, studentId);
+            StudentCv cv = student.getCv();
+            if (cv == null) {
+                cv = new StudentCv();
+                cv.setStudent(student);
+                student.setCv(cv);
+                entityManager.persist(cv);
+            }
             cv.setFilename(filename);
             cv.setFileType(fileType);
             cv.setFileContent(fileContent);
-
-            Student student = entityManager.find(Student.class, studentId);
-            if (student.getCv() != null) {
-                entityManager.remove(student.getCv());
-            }
-            student.setCv(cv);
-            cv.setStudent(student);
-            entityManager.persist(cv);
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
