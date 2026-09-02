@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.proiectre.proiectre.common.PositionDto;
 import org.proiectre.proiectre.entities.Company;
+import org.proiectre.proiectre.entities.CompanyStatus;
 import org.proiectre.proiectre.entities.Position;
 import org.proiectre.proiectre.entities.PositionStatus;
 
@@ -25,17 +26,6 @@ public class PositionBean {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    public List<PositionDto> findAllPositions() {
-        LOG.info("findAllPositions");
-        try {
-            TypedQuery<Position> typedQuery = entityManager.createQuery("SELECT p FROM Position p", Position.class);
-            List<Position> positions = typedQuery.getResultList();
-            return copyPositionsToDto(positions);
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
-    }
 
     public List<PositionDto> findAllPositionsPaged(int page) {
         LOG.info("findAllPositionsPaged " + page);
@@ -147,19 +137,6 @@ public class PositionBean {
         return dtos;
     }
 
-    public List<PositionDto> searchPositions(String query) {
-        LOG.info("searchPositions " + query);
-        try {
-            TypedQuery<Position> typedQuery = entityManager.createQuery(
-                    "SELECT p FROM Position p WHERE LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)",
-                    Position.class);
-            typedQuery.setParameter("q", "%" + query + "%");
-            return copyPositionsToDto(typedQuery.getResultList());
-        } catch (Exception ex) {
-            throw new EJBException(ex);
-        }
-    }
-
     public List<PositionDto> searchPositionsPaged(String query, int page) {
         LOG.info("searchPositionsPaged " + query + " page " + page);
         try {
@@ -208,6 +185,60 @@ public class PositionBean {
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
+    }
+
+    public List<PositionDto> findVisiblePositionsPaged(int page) {
+        LOG.info("findVisiblePositionsPaged " + page);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM Position p WHERE p.company.status = :companyStatus AND p.status = :positionStatus",
+                    Position.class);
+            typedQuery.setParameter("companyStatus", CompanyStatus.APPROVED);
+            typedQuery.setParameter("positionStatus", PositionStatus.APPROVED);
+            typedQuery.setFirstResult((page - 1) * PAGE_SIZE);
+            typedQuery.setMaxResults(PAGE_SIZE);
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public int countVisiblePositions() {
+        TypedQuery<Long> countQuery = entityManager.createQuery(
+                "SELECT COUNT(p) FROM Position p WHERE p.company.status = :companyStatus AND p.status = :positionStatus",
+                Long.class);
+        countQuery.setParameter("companyStatus", CompanyStatus.APPROVED);
+        countQuery.setParameter("positionStatus", PositionStatus.APPROVED);
+        return (int) Math.ceil(countQuery.getSingleResult() / (double) PAGE_SIZE);
+    }
+
+    public List<PositionDto> searchVisiblePositionsPaged(String query, int page) {
+        LOG.info("searchVisiblePositionsPaged " + query + " page " + page);
+        try {
+            TypedQuery<Position> typedQuery = entityManager.createQuery(
+                    "SELECT p FROM Position p WHERE (LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)) " +
+                            "AND p.company.status = :companyStatus AND p.status = :positionStatus",
+                    Position.class);
+            typedQuery.setParameter("q", "%" + query + "%");
+            typedQuery.setParameter("companyStatus", CompanyStatus.APPROVED);
+            typedQuery.setParameter("positionStatus", PositionStatus.APPROVED);
+            typedQuery.setFirstResult((page - 1) * PAGE_SIZE);
+            typedQuery.setMaxResults(PAGE_SIZE);
+            return copyPositionsToDto(typedQuery.getResultList());
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+    }
+
+    public int countVisibleSearchResults(String query) {
+        TypedQuery<Long> countQuery = entityManager.createQuery(
+                "SELECT COUNT(p) FROM Position p WHERE (LOWER(p.title) LIKE LOWER(:q) OR LOWER(p.company.name) LIKE LOWER(:q)) " +
+                        "AND p.company.status = :companyStatus AND p.status = :positionStatus",
+                Long.class);
+        countQuery.setParameter("q", "%" + query + "%");
+        countQuery.setParameter("companyStatus", CompanyStatus.APPROVED);
+        countQuery.setParameter("positionStatus", PositionStatus.APPROVED);
+        return (int) Math.ceil(countQuery.getSingleResult() / (double) PAGE_SIZE);
     }
 
     /* 1. parcurge lista de Position; 2. transforma fiecare Position in PositionDto */

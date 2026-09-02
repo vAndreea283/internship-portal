@@ -23,7 +23,7 @@
 
         <div class="mb-3">
             <label for="year_of_study_target" class="form-label">An de studiu tinta</label>
-            <input type="number" min="1" max="4" class="form-control" id="year_of_study_target" name="year_of_study_target" value="${position.yearOfStudyTarget}" required>
+            <input type="number" min="2" max="3" class="form-control" id="year_of_study_target" name="year_of_study_target" value="${position.yearOfStudyTarget}" required>
         </div>
 
         <div class="mb-3">

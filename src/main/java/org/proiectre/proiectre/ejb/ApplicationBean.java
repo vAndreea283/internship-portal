@@ -6,10 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.proiectre.proiectre.common.ApplicationDto;
-import org.proiectre.proiectre.entities.Application;
-import org.proiectre.proiectre.entities.ApplicationStatus;
-import org.proiectre.proiectre.entities.Position;
-import org.proiectre.proiectre.entities.Student;
+import org.proiectre.proiectre.entities.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -80,6 +77,9 @@ public class ApplicationBean {
             Position position = entityManager.find(Position.class, positionId);
             if (position == null) {
                 return "Pozitia nu exista!";
+            }
+            if (position.getStatus() != PositionStatus.APPROVED || position.getCompany().getStatus() != CompanyStatus.APPROVED) {
+                return "Aceasta pozitie nu este disponibila pentru aplicare.";
             }
             if (position.getApplicationDeadline() != null
                     && position.getApplicationDeadline().isBefore(LocalDate.now())) {

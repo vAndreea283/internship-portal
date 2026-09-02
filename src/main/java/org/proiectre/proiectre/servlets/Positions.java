@@ -30,14 +30,25 @@ public class Positions extends HttpServlet {
             throws ServletException, IOException {
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         String q = request.getParameter("q");
+        boolean canSeeAll = request.isUserInRole("WRITE_POSITIONS"); // departamentul vede tot, ca sa poata modera
 
         if (q != null && !q.isBlank()) {
-            request.setAttribute("positions", positionBean.searchPositionsPaged(q, page));
-            request.setAttribute("totalPages", positionBean.countSearchResults(q));
+            if (canSeeAll) {
+                request.setAttribute("positions", positionBean.searchPositionsPaged(q, page));
+                request.setAttribute("totalPages", positionBean.countSearchResults(q));
+            } else {
+                request.setAttribute("positions", positionBean.searchVisiblePositionsPaged(q, page));
+                request.setAttribute("totalPages", positionBean.countVisibleSearchResults(q));
+            }
             request.setAttribute("searchQuery", q);
         } else {
-            request.setAttribute("positions", positionBean.findAllPositionsPaged(page));
-            request.setAttribute("totalPages", positionBean.countAllPositions());
+            if (canSeeAll) {
+                request.setAttribute("positions", positionBean.findAllPositionsPaged(page));
+                request.setAttribute("totalPages", positionBean.countAllPositions());
+            } else {
+                request.setAttribute("positions", positionBean.findVisiblePositionsPaged(page));
+                request.setAttribute("totalPages", positionBean.countVisiblePositions());
+            }
         }
         request.setAttribute("currentPage", page);
         request.getRequestDispatcher("/WEB-INF/pages/positions.jsp").forward(request, response);
