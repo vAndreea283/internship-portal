@@ -6,7 +6,9 @@
     <persistence-unit name="default" transaction-type="JTA">
         <jta-data-source>jdbc/InternshipResource</jta-data-source>
         <properties>
-            <property name="jakarta.persistence.schema-generation.database.action" value="create-or-extend-tables" />
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            <property name="eclipselink.cache.shared.default" value="false" />
         </properties>
     </persistence-unit>
 </persistence>

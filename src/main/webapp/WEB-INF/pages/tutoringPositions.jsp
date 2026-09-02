@@ -46,18 +46,16 @@
                 <td>${empty tp.studentNames ? '-' : tp.studentNames}</td>
                 <c:if test="${pageContext.request.isUserInRole('WRITE_TUTORING')}">
                     <td>
-                        <c:if test="${empty tp.studentNames}">
-                            <form method="POST" action="${pageContext.request.contextPath}/AssignTutoring" class="d-flex gap-2 mb-1">
-                                <input type="hidden" name="tutoring_position_id" value="${tp.id}">
-                                <select class="form-select form-select-sm" name="student_id" required>
-                                    <option value="">Alege student...</option>
-                                    <c:forEach var="student" items="${unassignedStudents}">
-                                        <option value="${student.id}">${student.fullName}</option>
-                                    </c:forEach>
-                                </select>
-                                <button type="submit" class="btn btn-success btn-sm">Asigneaza</button>
-                            </form>
-                        </c:if>
+                        <form method="POST" action="${pageContext.request.contextPath}/AssignTutoring" class="d-flex gap-2 mb-1">
+                            <input type="hidden" name="tutoring_position_id" value="${tp.id}">
+                            <select class="form-select form-select-sm" name="student_id" required>
+                                <option value="">Alege student...</option>
+                                <c:forEach var="student" items="${unassignedStudents}">
+                                    <option value="${student.id}">${student.fullName}</option>
+                                </c:forEach>
+                            </select>
+                            <button type="submit" class="btn btn-success btn-sm">Asigneaza</button>
+                        </form>
                         <form method="POST" action="${pageContext.request.contextPath}/DeleteTutoringPosition" class="d-inline">
                             <input type="hidden" name="id" value="${tp.id}">
                             <button type="submit" class="btn btn-outline-danger btn-sm"
